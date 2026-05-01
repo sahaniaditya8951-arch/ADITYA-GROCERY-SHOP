@@ -3,368 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baragadhi Premium POS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Barcode Scanner Library for Camera -->
+    <title>Baragadhi Premium POS - v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --dark: #111827;
-            --light: #f3f4f6;
-            --white: #ffffff;
-            --gray: #6b7280;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #0f172a;
+            --accent: #38bdf8;
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
             --success: #10b981;
             --danger: #ef4444;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--light); display: flex; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar */
-        .sidebar { width: 250px; background-color: var(--dark); color: var(--white); display: flex; flex-direction: column; }
-        .logo { padding: 20px; font-size: 24px; font-weight: 700; text-align: center; border-bottom: 1px solid #374151; letter-spacing: 1px; color: #818cf8; }
-        .nav-btn { padding: 15px 20px; border: none; background: none; color: #9ca3af; text-align: left; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        .nav-btn:hover, .nav-btn.active { background-color: #374151; color: var(--white); border-left: 4px solid var(--primary); }
+        /* Sidebar Styling */
+        .sidebar { width: 260px; background-color: var(--secondary); color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); z-index: 10; }
+        .brand { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .brand h1 { font-size: 28px; font-weight: 700; color: white; letter-spacing: 1.5px; margin-bottom: 5px; }
+        .brand span { font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 3px; text-transform: uppercase; }
+        
+        .nav-menu { padding: 20px 0; flex: 1; }
+        .nav-btn { width: 100%; padding: 16px 25px; background: transparent; border: none; color: #94a3b8; text-align: left; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 15px; }
+        .nav-btn i { font-size: 18px; width: 20px; text-align: center; }
+        .nav-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-btn.active { color: white; background: var(--primary); border-left: 4px solid var(--accent); }
 
-        /* Main Content */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .header { background: var(--white); padding: 15px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .header h2 { color: var(--dark); font-size: 20px; }
-        .date-time { color: var(--gray); font-size: 14px; }
+        /* Main Content Area */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .top-header { background: var(--surface); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .top-header h2 { font-size: 24px; font-weight: 600; color: var(--secondary); }
+        .clock { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-weight: 500; background: var(--bg-color); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); }
 
-        .section { display: none; padding: 20px 30px; }
+        /* Container Sections */
+        .section { display: none; padding: 30px 40px; height: calc(100vh - 85px); overflow-y: auto; }
         .section.active { display: block; }
 
-        /* Grid Layout for POS */
-        .pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; height: calc(100vh - 120px); }
-        .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        /* Modern Grid Layout */
+        .pos-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; height: 100%; }
+        .card { background: var(--surface); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; }
+        .card-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--secondary); display: flex; align-items: center; gap: 10px; }
 
-        /* Inputs & Buttons */
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; color: var(--gray); font-size: 13px; font-weight: 500; }
-        input, select { width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: 0.3s; outline: none; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-        .flex-row { display: flex; gap: 10px; }
+        /* Premium Inputs */
+        .input-group { margin-bottom: 20px; width: 100%; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i { position: absolute; left: 15px; color: #94a3b8; }
+        input, select { width: 100%; padding: 12px 15px; padding-left: 15px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; color: var(--text-main); background: var(--bg-color); transition: all 0.3s; outline: none; }
+        .input-wrapper input { padding-left: 45px; }
+        input:focus, select:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
         
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 14px; }
-        .btn-primary { background: var(--primary); color: var(--white); }
-        .btn-primary:hover { background: var(--primary-hover); }
-        .btn-success { background: var(--success); color: var(--white); width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; }
+        .row { display: flex; gap: 15px; }
+        .col { flex: 1; }
+
+        /* Buttons */
+        .btn { padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
         .btn-success:hover { background: #059669; }
-        .btn-danger { background: var(--danger); color: var(--white); padding: 5px 10px; font-size: 12px; }
+        .btn-danger { background: #fee2e2; color: var(--danger); padding: 8px 12px; border-radius: 8px; }
+        .btn-danger:hover { background: var(--danger); color: white; }
 
         /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { color: var(--gray); font-weight: 500; font-size: 13px; text-transform: uppercase; }
-        td { font-size: 14px; color: var(--dark); }
+        .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { background: var(--bg-color); position: sticky; top: 0; z-index: 1; }
+        th { padding: 15px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        td { padding: 15px; font-size: 14px; color: var(--secondary); border-bottom: 1px solid var(--border); font-weight: 500; }
+        tbody tr:hover { background: #f8fafc; }
 
-        /* Cart Area */
-        .cart-area { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        .cart-items { flex: 1; overflow-y: auto; margin-bottom: 15px; border-bottom: 2px dashed #e5e7eb; padding-bottom: 10px; }
-        .totals-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; color: var(--gray); }
-        .grand-total { display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 15px; }
+        /* Cart Specific */
+        .cart-footer { margin-top: 20px; background: var(--bg-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); font-size: 15px; }
+        .summary-total { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed var(--border); font-size: 24px; font-weight: 700; color: var(--primary); }
+        
+        .checkout-btn { width: 100%; padding: 18px; font-size: 18px; margin-top: 20px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Camera Modal Setup */
-        #camera-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .camera-container { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; }
-        #reader { width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; }
+        /* Unit Badge */
+        .unit-badge { display: inline-block; padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 12px; font-weight: 600; margin-left: 5px; }
 
-        /* Print Receipt Styling */
+        /* Modal */
+        #camera-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: var(--shadow-lg); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- THERMAL PRINTING CSS (NO CHEAP UI HERE) --- */
         #print-section { display: none; }
         
         @media print {
-            body * { visibility: hidden; }
-            #print-section, #print-section * { visibility: visible; }
+            body * { visibility: hidden !important; }
+            body { background: white; margin: 0; padding: 0; }
+            #print-section, #print-section * { visibility: visible !important; }
             #print-section { 
-                position: absolute; left: 0; top: 0; width: 80mm; 
-                padding: 10px; font-family: monospace; font-size: 12px; color: #000;
+                position: absolute; left: 0; top: 0; 
+                width: 80mm; /* Standard Thermal Roll */
+                padding: 5mm; 
+                font-family: 'Courier New', Courier, monospace; 
+                font-size: 12px; color: #000;
             }
-            .print-center { text-align: center; }
-            .print-divider { border-top: 1px dashed #000; margin: 5px 0; }
-            .print-table { width: 100%; }
-            .print-table th, .print-table td { padding: 2px 0; text-align: left; border: none; }
-            .print-table th:last-child, .print-table td:last-child { text-align: right; }
+            .p-center { text-align: center; }
+            .p-bold { font-weight: bold; }
+            .p-line { border-top: 1px dashed #000; margin: 8px 0; }
+            .p-table { width: 100%; border-collapse: collapse; }
+            .p-table th, .p-table td { text-align: left; padding: 4px 0; vertical-align: top; }
+            .p-table th:last-child, .p-table td:last-child { text-align: right; }
+            .p-table td { border-bottom: 1px dotted #ccc; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
-        <div class="logo">BARAGADHI<br><span style="font-size: 12px; color: #9ca3af;">SUPERMART</span></div>
-        <button class="nav-btn active" id="nav-pos" onclick="switchTab('pos')">🛒 Point of Sale</button>
-        <button class="nav-btn" id="nav-inv" onclick="switchTab('inventory')">📦 Inventory</button>
-        <button class="nav-btn" id="nav-cust" onclick="switchTab('customers')">👥 Customers</button>
+        <div class="brand">
+            <h1>BARAGADHI</h1>
+            <span>Premium Mart</span>
+        </div>
+        <div class="nav-menu">
+            <button class="nav-btn active" onclick="switchTab('pos')"><i class="fas fa-desktop"></i> Point of Sale</button>
+            <button class="nav-btn" onclick="switchTab('inventory')"><i class="fas fa-boxes-stacked"></i> Inventory (Stock)</button>
+            <button class="nav-btn" onclick="switchTab('customers')"><i class="fas fa-users"></i> Customers</button>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="header">
+    <!-- MAIN AREA -->
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <div class="top-header">
             <h2 id="page-title">Point of Sale</h2>
-            <div class="date-time" id="current-date"></div>
+            <div class="clock"><i class="far fa-clock"></i> <span id="current-date"></span></div>
         </div>
 
         <!-- POS SECTION -->
         <div id="pos-section" class="section active">
             <div class="pos-grid">
-                <!-- Left: Scanner & Product List -->
-                <div class="card" style="display: flex; flex-direction: column;">
+                
+                <!-- Left Column: Scanning & Selection -->
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-barcode"></i> Scan & Add Items</div>
                     
                     <div class="input-group">
-                        <label>🔍 Scan Barcode (Keep cursor here for physical machine)</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="barcode-scanner" placeholder="Scan using machine..." autofocus onkeypress="handleBarcodeScan(event)" style="flex: 1;">
-                            <button class="btn btn-primary" onclick="openCameraScanner()" style="display: flex; align-items: center; gap: 5px;">
-                                📷 Mobile Camera
-                            </button>
+                        <label>Scan Barcode (Keep cursor here)</label>
+                        <div class="row">
+                            <div class="input-wrapper" style="flex: 1;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="barcode-scanner" placeholder="Scan using physical machine..." autofocus onkeypress="handleBarcodeScan(event)">
+                            </div>
+                            <button class="btn btn-primary" onclick="openCameraScanner()"><i class="fas fa-camera"></i> Mobile Camera</button>
                         </div>
                     </div>
 
-                    <div class="flex-row" style="margin-bottom: 15px;">
-                        <div class="input-group" style="flex: 2;">
-                            <label>Manual Item Select</label>
+                    <div style="border-top: 1px dashed var(--border); margin: 20px 0;"></div>
+
+                    <div class="card-title"><i class="fas fa-hand-pointer"></i> Manual Selection</div>
+                    <div class="row" style="align-items: flex-end;">
+                        <div class="input-group col" style="flex: 2;">
+                            <label>Select Item</label>
                             <select id="manual-item"></select>
                         </div>
-                        <div class="input-group" style="flex: 1;">
-                            <label>Qty</label>
-                            <input type="number" id="manual-qty" value="1" min="1">
+                        <div class="input-group col">
+                            <label>Quantity</label>
+                            <!-- Note: step="any" allows decimals like 1.5 for KG -->
+                            <input type="number" id="manual-qty" value="1" step="any" min="0.1">
                         </div>
-                        <div class="input-group" style="display: flex; align-items: flex-end;">
-                            <button class="btn btn-primary" onclick="addManualItem()">Add</button>
+                        <div class="input-group" style="width: auto;">
+                            <button class="btn btn-success" style="padding: 12px 20px;" onclick="addManualItem()"><i class="fas fa-plus"></i> Add</button>
                         </div>
                     </div>
-                    
-                    <div style="flex: 1; overflow-y: auto; border-top: 1px solid #e5e7eb; padding-top: 10px;">
-                        <h4 style="margin-bottom: 10px; color: var(--gray);">Available Stock Quick View</h4>
+
+                    <div class="table-container">
                         <table>
-                            <thead><tr><th>Barcode</th><th>Item</th><th>Price</th><th>Stock</th></tr></thead>
+                            <thead><tr><th>Item Details</th><th>Price</th><th>Stock Left</th></tr></thead>
                             <tbody id="quick-stock-table"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Right: Cart & Customer -->
-                <div class="card cart-area">
-                    <div>
-                        <div class="flex-row">
-                            <div class="input-group" style="flex: 1;">
-                                <label>Customer Phone</label>
-                                <input type="text" id="cust-phone" placeholder="10-digit number" onkeyup="checkCustomer()">
-                            </div>
-                            <div class="input-group" style="flex: 1;">
-                                <label>Customer Name</label>
-                                <input type="text" id="cust-name" placeholder="Name">
+                <!-- Right Column: Cart & Checkout -->
+                <div class="card" style="background: #f8fafc;">
+                    <div class="card-title"><i class="fas fa-shopping-cart"></i> Current Order</div>
+                    
+                    <div class="row">
+                        <div class="input-group col">
+                            <div class="input-wrapper">
+                                <i class="fas fa-phone"></i>
+                                <input type="text" id="cust-phone" placeholder="Customer Phone" onkeyup="checkCustomer()">
                             </div>
                         </div>
-                        <div class="cart-items">
-                            <table>
-                                <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead>
-                                <tbody id="cart-table"></tbody>
-                            </table>
+                        <div class="input-group col">
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="cust-name" placeholder="Customer Name">
+                            </div>
                         </div>
                     </div>
-                    
-                    <div>
-                        <div class="totals-row"><span>Subtotal:</span> <span id="subtotal">₹0.00</span></div>
-                        <div class="totals-row"><span>Tax (Included):</span> <span>₹0.00</span></div>
-                        <div class="grand-total"><span>Grand Total:</span> <span id="grand-total">₹0.00</span></div>
-                        <button class="btn-success" onclick="generateBill()">🧾 Print Bill & Checkout</button>
+
+                    <div class="table-container" style="background: white;">
+                        <table>
+                            <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+                            <tbody id="cart-table"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="cart-footer">
+                        <div class="summary-row"><span>Total Items:</span> <span id="item-count" class="p-bold">0</span></div>
+                        <div class="summary-total"><span>Grand Total:</span> <span id="grand-total">₹0.00</span></div>
+                        <button class="btn btn-success checkout-btn" onclick="generateBill()">
+                            <i class="fas fa-print"></i> Print Bill & Checkout
+                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
 
         <!-- INVENTORY SECTION -->
         <div id="inventory-section" class="section">
             <div class="card">
-                <h3 style="margin-bottom: 15px;">Add New Item</h3>
-                <div class="flex-row">
-                    <div class="input-group" style="flex: 1;"><label>Barcode</label><input type="text" id="inv-barcode" placeholder="Scan or Type"></div>
-                    <div class="input-group" style="flex: 2;"><label>Item Name</label><input type="text" id="inv-name" placeholder="Product Name"></div>
-                    <div class="input-group" style="flex: 1;"><label>Price (₹)</label><input type="number" id="inv-price" placeholder="0.00"></div>
-                    <div class="input-group" style="flex: 1;"><label>Stock Qty</label><input type="number" id="inv-stock" placeholder="0"></div>
-                    <div class="input-group" style="display: flex; align-items: flex-end;"><button class="btn btn-primary" onclick="addInventory()">Save Item</button></div>
+                <div class="card-title"><i class="fas fa-box-open"></i> Add New Product to Inventory</div>
+                
+                <div class="row">
+                    <div class="input-group col"><label>Barcode</label><input type="text" id="inv-barcode" placeholder="Scan or type barcode"></div>
+                    <div class="input-group col" style="flex: 1.5;"><label>Product Name</label><input type="text" id="inv-name" placeholder="E.g., Ashirvad Atta"></div>
+                    <div class="input-group col"><label>Selling Price (₹)</label><input type="number" id="inv-price" placeholder="0.00" step="any"></div>
+                    <div class="input-group col">
+                        <label>Unit Type</label>
+                        <select id="inv-unit">
+                            <option value="Pcs">Pieces (Pcs)</option>
+                            <option value="Kg">Kilogram (Kg)</option>
+                            <option value="Gm">Gram (Gm)</option>
+                            <option value="Ltr">Liter (Ltr)</option>
+                        </select>
+                    </div>
+                    <div class="input-group col"><label>Total Stock</label><input type="number" id="inv-stock" placeholder="0" step="any"></div>
+                    <div class="input-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn btn-primary" style="height: 45px;" onclick="addInventory()"><i class="fas fa-save"></i> Save Product</button>
+                    </div>
                 </div>
-                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e5e7eb;">
-                <h3 style="margin-bottom: 15px;">Inventory Master</h3>
-                <table>
-                    <thead><tr><th>Barcode</th><th>Item Name</th><th>Selling Price</th><th>Available Stock</th><th>Action</th></tr></thead>
-                    <tbody id="inv-table"></tbody>
-                </table>
+
+                <div class="table-container" style="margin-top: 20px;">
+                    <table>
+                        <thead><tr><th>Barcode</th><th>Product Name</th><th>Price</th><th>Stock Status</th><th>Action</th></tr></thead>
+                        <tbody id="inv-table"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- CUSTOMERS SECTION -->
         <div id="customers-section" class="section">
             <div class="card">
-                <h3 style="margin-bottom: 15px;">Customer Database</h3>
-                <table>
-                    <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Total Visits</th></tr></thead>
-                    <tbody id="cust-table"></tbody>
-                </table>
+                <div class="card-title"><i class="fas fa-users"></i> Customer Database</div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Total Store Visits</th></tr></thead>
+                        <tbody id="cust-table"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Camera Scanning Modal -->
     <div id="camera-modal">
-        <div class="camera-container">
-            <h3 style="margin-bottom: 10px;">Scan Barcode</h3>
-            <p style="font-size: 12px; color: var(--gray); margin-bottom: 15px;">Point your camera at the barcode.</p>
-            <div id="reader"></div>
-            <button class="btn btn-danger" style="margin-top: 15px; width: 100%;" onclick="closeCameraScanner()">Cancel / Close</button>
+        <div class="modal-content">
+            <h2 style="margin-bottom: 10px; color: var(--secondary);">Scan Product</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Point camera at the barcode.</p>
+            <div id="reader" style="border-radius: 12px; overflow: hidden; margin-bottom: 20px;"></div>
+            <button class="btn btn-danger" style="width: 100%; padding: 15px; font-size: 16px;" onclick="closeCameraScanner()">Cancel Scanning</button>
         </div>
     </div>
 
-    <!-- Hidden Print Area (Thermal Receipt Format) -->
+    <!-- THERMAL PRINT RECEIPT (Hidden on Screen, Visible on Print) -->
     <div id="print-section">
-        <div class="print-center">
-            <h2 style="margin: 0;">BARAGADHI RETAIL</h2>
+        <div class="p-center">
+            <h2 style="margin: 0; font-size: 18px;">BARAGADHI RETAIL</h2>
+            <p style="margin: 2px 0;">Supermart</p>
             <p style="margin: 2px 0;">Gorakhpur, UP</p>
-            <p style="margin: 2px 0;">Ph: +91-9999999999</p>
         </div>
-        <div class="print-divider"></div>
-        <p style="margin: 2px 0;">Date: <span id="print-date"></span></p>
-        <p style="margin: 2px 0;">Customer: <span id="print-cust-name"></span></p>
+        <div class="p-line"></div>
+        <div style="display: flex; justify-content: space-between;">
+            <span>Date: <span id="print-date"></span></span>
+            <span>Time: <span id="print-time"></span></span>
+        </div>
+        <p style="margin: 2px 0;">Customer: <span id="print-cust-name" class="p-bold"></span></p>
         <p style="margin: 2px 0;">Phone: <span id="print-cust-phone"></span></p>
-        <div class="print-divider"></div>
-        <table class="print-table">
+        <div class="p-line"></div>
+        <table class="p-table">
             <thead><tr><th>Item</th><th>Qty</th><th>Amt</th></tr></thead>
             <tbody id="print-cart-items"></tbody>
         </table>
-        <div class="print-divider"></div>
-        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold;">
-            <span>TOTAL:</span><span id="print-total">₹0.00</span>
+        <div class="p-line"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 16px;" class="p-bold">
+            <span>GRAND TOTAL:</span><span id="print-total">₹0.00</span>
         </div>
-        <div class="print-divider"></div>
-        <div class="print-center">
-            <p>Thank You for Shopping!</p>
-            <p>Visit Again</p>
+        <div class="p-line"></div>
+        <div class="p-center">
+            <p style="margin: 5px 0;">*** Thank You for Visiting! ***</p>
+            <p style="margin: 0; font-size: 10px;">Powered by NextGen Systems</p>
         </div>
     </div>
 
+    <!-- SCRIPT LOGIC -->
     <script>
-        // Data Structures
-        let inventory = JSON.parse(localStorage.getItem('bg_inventory')) || [];
-        let customers = JSON.parse(localStorage.getItem('bg_customers')) || {};
+        // Data Storage
+        let inventory = JSON.parse(localStorage.getItem('baragadhi_inv_v2')) || [];
+        let customers = JSON.parse(localStorage.getItem('baragadhi_cust_v2')) || {};
         let cart = [];
-        let html5QrCode; // For camera scanner
+        let html5QrCode;
 
-        // Set Date
-        document.getElementById('current-date').innerText = new Date().toLocaleString('en-IN');
-        setInterval(() => { document.getElementById('current-date').innerText = new Date().toLocaleString('en-IN'); }, 1000);
+        // Clock Update
+        setInterval(() => { 
+            let d = new Date();
+            document.getElementById('current-date').innerText = d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); 
+        }, 1000);
 
-        // Tab Switching
+        // Navigation
         function switchTab(tab) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tab + '-section').classList.add('active');
             
+            // Set active button
+            event.currentTarget.classList.add('active');
+            
             let titles = { 'pos': 'Point of Sale', 'inventory': 'Inventory Management', 'customers': 'Customer Directory' };
             document.getElementById('page-title').innerText = titles[tab];
             
-            if(tab === 'pos') {
-                document.getElementById('nav-pos').classList.add('active');
-                document.getElementById('barcode-scanner').focus();
-            }
-            if(tab === 'inventory') document.getElementById('nav-inv').classList.add('active');
-            if(tab === 'customers') document.getElementById('nav-cust').classList.add('active');
+            if(tab === 'pos') document.getElementById('barcode-scanner').focus();
             updateUI();
         }
 
-        // --- Inventory Functions ---
+        // --- INVENTORY ---
         function addInventory() {
             let barcode = document.getElementById('inv-barcode').value.trim();
             let name = document.getElementById('inv-name').value.trim();
             let price = parseFloat(document.getElementById('inv-price').value);
-            let stock = parseInt(document.getElementById('inv-stock').value);
+            let unit = document.getElementById('inv-unit').value;
+            let stock = parseFloat(document.getElementById('inv-stock').value);
 
-            if(!barcode || !name || isNaN(price) || isNaN(stock)) return alert("Please fill all fields correctly.");
+            if(!barcode || !name || isNaN(price) || isNaN(stock)) return alert("Please fill all fields correctly!");
             
             let existingIdx = inventory.findIndex(i => i.barcode === barcode);
             if(existingIdx >= 0) {
                 inventory[existingIdx].stock += stock; 
                 inventory[existingIdx].price = price;
+                inventory[existingIdx].unit = unit;
             } else {
-                inventory.push({ barcode, name, price, stock });
+                inventory.push({ barcode, name, price, unit, stock });
             }
             
-            saveData(); clearInvInputs(); updateUI(); alert("Item Saved!");
-        }
-
-        function deleteItem(index) {
-            if(confirm("Delete this item?")) {
-                inventory.splice(index, 1);
-                saveData(); updateUI();
-            }
-        }
-
-        function clearInvInputs() {
+            localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
+            
             document.getElementById('inv-barcode').value = '';
             document.getElementById('inv-name').value = '';
             document.getElementById('inv-price').value = '';
             document.getElementById('inv-stock').value = '';
+            
+            updateUI(); 
+            alert("Product Saved Successfully!");
         }
 
-        // --- POS Functions (Physical Scanner) ---
+        function deleteItem(index) {
+            if(confirm("Are you sure you want to delete this product?")) {
+                inventory.splice(index, 1);
+                localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
+                updateUI();
+            }
+        }
+
+        // --- POS SCANNER LOGIC ---
         function handleBarcodeScan(e) {
             if(e.key === 'Enter') {
                 let barcode = e.target.value.trim();
                 let item = inventory.find(i => i.barcode === barcode);
-                
-                if(item) {
-                    addToCart(item, 1);
-                    playBeepSound();
-                } else {
-                    alert("Product not found in inventory!");
-                }
-                e.target.value = ''; // Clear for next scan
+                if(item) { addToCart(item, 1); playBeepSound(); } 
+                else { alert("Product not found!"); }
+                e.target.value = '';
                 e.target.focus();
             }
         }
 
-        // --- POS Functions (Mobile Camera Scanner) ---
+        // --- CAMERA SCANNER ---
         function openCameraScanner() {
             document.getElementById('camera-modal').style.display = 'flex';
             html5QrCode = new Html5Qrcode("reader");
-            
-            // facingMode: "environment" uses the back camera
-            html5QrCode.start({ facingMode: "environment" }, {
-                fps: 10,
-                qrbox: { width: 250, height: 150 }
-            }, (decodedText, decodedResult) => {
-                // On Success Scan
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 150 } }, 
+            (decodedText) => {
                 closeCameraScanner();
                 let item = inventory.find(i => i.barcode === decodedText);
-                if(item) {
-                    addToCart(item, 1);
-                    playBeepSound();
-                } else {
-                    alert("Product not found: " + decodedText);
-                }
+                if(item) { addToCart(item, 1); playBeepSound(); } 
+                else { alert("Product not found!"); }
             }).catch(err => {
-                alert("Camera starting error. Please allow camera permissions.");
+                alert("Camera error. Check permissions.");
                 closeCameraScanner();
             });
         }
-
         function closeCameraScanner() {
             document.getElementById('camera-modal').style.display = 'none';
-            if(html5QrCode) {
-                try {
-                    html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(e => console.log(e));
-                } catch(e) {}
-            }
-            document.getElementById('barcode-scanner').focus();
+            if(html5QrCode) { try { html5QrCode.stop().then(() => html5QrCode.clear()); } catch(e) {} }
         }
 
-        // --- Core POS Logic ---
+        // --- CART LOGIC ---
         function addManualItem() {
             let barcode = document.getElementById('manual-item').value;
-            let qty = parseInt(document.getElementById('manual-qty').value);
+            let qty = parseFloat(document.getElementById('manual-qty').value);
             if(!barcode || isNaN(qty) || qty <= 0) return;
             let item = inventory.find(i => i.barcode === barcode);
             if(item) addToCart(item, qty);
@@ -375,11 +435,11 @@
             let currentCartQty = cartItem ? cartItem.qty : 0;
 
             if(item.stock < (currentCartQty + qty)) {
-                return alert(`Not enough stock! Only ${item.stock} left.`);
+                return alert(`Stock Low! Only ${item.stock} ${item.unit} available.`);
             }
 
             if(cartItem) { cartItem.qty += qty; } 
-            else { cart.push({ barcode: item.barcode, name: item.name, price: item.price, qty: qty }); }
+            else { cart.push({ barcode: item.barcode, name: item.name, price: item.price, unit: item.unit, qty: qty }); }
             updateCartUI();
         }
 
@@ -389,35 +449,31 @@
         }
 
         function updateCartUI() {
-            let tbody = ''; let total = 0;
+            let tbody = ''; let total = 0; let itemCount = 0;
             cart.forEach(c => {
-                let amt = c.price * c.qty; total += amt;
+                let amt = c.price * c.qty; total += amt; itemCount += 1;
                 tbody += `<tr>
-                    <td><div style="font-weight:600;">${c.name}</div><div style="font-size:12px; color:var(--gray);">${c.barcode}</div></td>
-                    <td>${c.qty}</td>
-                    <td>₹${amt.toFixed(2)}</td>
-                    <td><button class="btn-danger btn" onclick="removeFromCart('${c.barcode}')">X</button></td>
+                    <td><div>${c.name}</div><div style="font-size:11px; color:#64748b;">${c.barcode}</div></td>
+                    <td class="p-bold">${c.qty} <span class="unit-badge">${c.unit}</span></td>
+                    <td class="p-bold">₹${amt.toFixed(2)}</td>
+                    <td><button class="btn-danger" onclick="removeFromCart('${c.barcode}')"><i class="fas fa-trash"></i></button></td>
                 </tr>`;
             });
             document.getElementById('cart-table').innerHTML = tbody;
-            document.getElementById('subtotal').innerText = `₹${total.toFixed(2)}`;
+            document.getElementById('item-count').innerText = itemCount;
             document.getElementById('grand-total').innerText = `₹${total.toFixed(2)}`;
         }
 
-        // Play Beep Sound Function
         function playBeepSound() {
             try {
-                let context = new (window.AudioContext || window.webkitAudioContext)();
-                let oscillator = context.createOscillator();
-                oscillator.type = "sine";
-                oscillator.frequency.value = 800; // Beep frequency
-                oscillator.connect(context.destination);
-                oscillator.start();
-                oscillator.stop(context.currentTime + 0.1); // Beep duration
-            } catch(e) { console.log("Audio not supported"); }
+                let ctx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = ctx.createOscillator();
+                osc.type = "sine"; osc.frequency.value = 800;
+                osc.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
+            } catch(e) {}
         }
 
-        // --- Customer Logic ---
         function checkCustomer() {
             let phone = document.getElementById('cust-phone').value;
             if(phone.length >= 10 && customers[phone]) {
@@ -425,71 +481,106 @@
             }
         }
 
-        // --- Checkout & Print ---
+        // --- CHECKOUT & PRINT ---
         function generateBill() {
-            if(cart.length === 0) return alert("Cart is empty!");
+            if(cart.length === 0) return alert("Cart is empty! Add items first.");
             
             let phone = document.getElementById('cust-phone').value || "Walk-in";
             let name = document.getElementById('cust-name').value || "Customer";
             let total = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
 
+            // Save Customer
             if(phone !== "Walk-in") {
                 if(!customers[phone]) customers[phone] = { name: name, visits: 0 };
                 customers[phone].visits += 1;
                 customers[phone].name = name; 
+                localStorage.setItem('baragadhi_cust_v2', JSON.stringify(customers));
             }
 
+            // Deduct Stock
             cart.forEach(cItem => {
                 let invItem = inventory.find(i => i.barcode === cItem.barcode);
                 if(invItem) invItem.stock -= cItem.qty;
             });
+            localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
 
-            saveData();
-
-            document.getElementById('print-date').innerText = new Date().toLocaleString('en-IN');
+            // Prepare Print Layout
+            let d = new Date();
+            document.getElementById('print-date').innerText = d.toLocaleDateString('en-IN');
+            document.getElementById('print-time').innerText = d.toLocaleTimeString('en-IN');
             document.getElementById('print-cust-name').innerText = name;
             document.getElementById('print-cust-phone').innerText = phone;
             
             let printTbody = '';
-            cart.forEach(c => { printTbody += `<tr><td>${c.name}</td><td>${c.qty}</td><td>₹${(c.price * c.qty)}</td></tr>`; });
+            cart.forEach(c => { 
+                printTbody += `<tr>
+                    <td>${c.name}<br><small style="font-size:10px;">₹${c.price}/${c.unit}</small></td>
+                    <td>${c.qty} ${c.unit}</td>
+                    <td>₹${(c.price * c.qty).toFixed(2)}</td>
+                </tr>`; 
+            });
             document.getElementById('print-cart-items').innerHTML = printTbody;
             document.getElementById('print-total').innerText = `₹${total.toFixed(2)}`;
 
+            // Call Browser Print
             window.print();
 
+            // Clear Cart after Print
             cart = [];
             document.getElementById('cust-phone').value = '';
             document.getElementById('cust-name').value = '';
-            updateCartUI(); updateUI();
+            updateCartUI(); 
+            updateUI();
             document.getElementById('barcode-scanner').focus();
         }
 
-        // --- Core UI Updates ---
-        function saveData() {
-            localStorage.setItem('bg_inventory', JSON.stringify(inventory));
-            localStorage.setItem('bg_customers', JSON.stringify(customers));
-        }
-
+        // --- UPDATE UI ELEMENTS ---
         function updateUI() {
-            let invHtml = ''; let stockHtml = ''; let manualOptions = '<option value="">-- Select Item --</option>';
+            let invHtml = ''; let stockHtml = ''; let manualOptions = '<option value="">-- Search & Select --</option>';
             
             inventory.forEach((item, idx) => {
-                let stockStyle = item.stock < 5 ? 'color: var(--danger); font-weight:bold;' : '';
-                invHtml += `<tr><td>${item.barcode}</td><td>${item.name}</td><td>₹${item.price}</td><td style="${stockStyle}">${item.stock}</td>
-                    <td><button class="btn btn-danger" onclick="deleteItem(${idx})">Delete</button></td></tr>`;
-                stockHtml += `<tr><td>${item.barcode}</td><td>${item.name}</td><td>₹${item.price}</td><td style="${stockStyle}">${item.stock}</td></tr>`;
-                if(item.stock > 0) { manualOptions += `<option value="${item.barcode}">${item.name} (Stock: ${item.stock})</option>`; }
+                let isLowStock = item.stock <= 5;
+                let stockColor = isLowStock ? 'color: var(--danger); font-weight: bold;' : 'color: var(--success); font-weight: 600;';
+                
+                // Inventory Page Table
+                invHtml += `<tr>
+                    <td><i class="fas fa-barcode" style="color:#cbd5e1; margin-right:5px;"></i> ${item.barcode}</td>
+                    <td class="p-bold">${item.name}</td>
+                    <td>₹${item.price} / ${item.unit}</td>
+                    <td style="${stockColor}">${item.stock} ${item.unit}</td>
+                    <td><button class="btn-danger" onclick="deleteItem(${idx})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+                
+                // POS Quick View Table
+                stockHtml += `<tr>
+                    <td><div>${item.name}</div><div style="font-size:11px; color:#64748b;">${item.barcode}</div></td>
+                    <td>₹${item.price}/${item.unit}</td>
+                    <td style="${stockColor}">${item.stock} ${item.unit}</td>
+                </tr>`;
+                
+                // Dropdown Select
+                if(item.stock > 0) { 
+                    manualOptions += `<option value="${item.barcode}">${item.name} - ₹${item.price} (Stock: ${item.stock} ${item.unit})</option>`; 
+                }
             });
 
             document.getElementById('inv-table').innerHTML = invHtml;
             document.getElementById('quick-stock-table').innerHTML = stockHtml;
             document.getElementById('manual-item').innerHTML = manualOptions;
 
+            // Customers Table
             let custHtml = '';
-            for(let phone in customers) { custHtml += `<tr><td>${phone}</td><td>${customers[phone].name}</td><td>${customers[phone].visits}</td></tr>`; }
+            for(let phone in customers) { 
+                custHtml += `<tr>
+                    <td class="p-bold"><i class="fas fa-phone-alt" style="color:#cbd5e1; margin-right:8px;"></i>${phone}</td>
+                    <td>${customers[phone].name}</td>
+                    <td><span class="unit-badge" style="background:#dcfce7; color:#166534;">${customers[phone].visits} Visits</span></td>
+                </tr>`; 
+            }
             document.getElementById('cust-table').innerHTML = custHtml;
         }
 
+        // Initialize App
         updateUI();
         document.getElementById('barcode-scanner').focus();
     </script>
