@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baragadhi Premium POS - v2.0</title>
+    <title>Baragadhi Premium POS - Pro Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,14 +21,13 @@
             --danger: #ef4444;
             --border: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar Styling */
+        /* Sidebar */
         .sidebar { width: 260px; background-color: var(--secondary); color: white; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); z-index: 10; }
         .brand { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .brand h1 { font-size: 28px; font-weight: 700; color: white; letter-spacing: 1.5px; margin-bottom: 5px; }
@@ -37,100 +36,79 @@
         .nav-menu { padding: 20px 0; flex: 1; }
         .nav-btn { width: 100%; padding: 16px 25px; background: transparent; border: none; color: #94a3b8; text-align: left; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 15px; }
         .nav-btn i { font-size: 18px; width: 20px; text-align: center; }
-        .nav-btn:hover { color: white; background: rgba(255,255,255,0.05); }
-        .nav-btn.active { color: white; background: var(--primary); border-left: 4px solid var(--accent); }
+        .nav-btn:hover, .nav-btn.active { color: white; background: var(--primary); border-left: 4px solid var(--accent); }
 
-        /* Main Content Area */
+        /* Main Wrapper */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .top-header { background: var(--surface); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .top-header h2 { font-size: 24px; font-weight: 600; color: var(--secondary); }
         .clock { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-weight: 500; background: var(--bg-color); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); }
 
-        /* Container Sections */
         .section { display: none; padding: 30px 40px; height: calc(100vh - 85px); overflow-y: auto; }
         .section.active { display: block; }
 
-        /* Modern Grid Layout */
+        /* Layout Grids */
         .pos-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; height: 100%; }
+        
+        /* FIX: New Inventory Grid Layout */
+        .inventory-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 25px; }
+        
         .card { background: var(--surface); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; }
         .card-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--secondary); display: flex; align-items: center; gap: 10px; }
 
-        /* Premium Inputs */
-        .input-group { margin-bottom: 20px; width: 100%; }
+        /* Inputs */
+        .input-group { width: 100%; }
         .input-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
         .input-wrapper i { position: absolute; left: 15px; color: #94a3b8; }
-        input, select { width: 100%; padding: 12px 15px; padding-left: 15px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; color: var(--text-main); background: var(--bg-color); transition: all 0.3s; outline: none; }
+        input, select { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 10px; font-size: 15px; color: var(--text-main); background: var(--surface); transition: all 0.3s; outline: none; }
         .input-wrapper input { padding-left: 45px; }
-        input:focus, select:focus { border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
         .row { display: flex; gap: 15px; }
-        .col { flex: 1; }
 
         /* Buttons */
-        .btn { padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3); }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-success { background: var(--success); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: white; }
         .btn-success:hover { background: #059669; }
         .btn-danger { background: #fee2e2; color: var(--danger); padding: 8px 12px; border-radius: 8px; }
         .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-icon-only { padding: 12px 15px; }
 
         /* Tables */
-        .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; margin-top: 10px; }
+        .table-container { flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 12px; background: white; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
         thead { background: var(--bg-color); position: sticky; top: 0; z-index: 1; }
         th { padding: 15px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 2px solid var(--border); }
         td { padding: 15px; font-size: 14px; color: var(--secondary); border-bottom: 1px solid var(--border); font-weight: 500; }
-        tbody tr:hover { background: #f8fafc; }
 
-        /* Cart Specific */
-        .cart-footer { margin-top: 20px; background: var(--bg-color); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--text-muted); font-size: 15px; }
-        .summary-total { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed var(--border); font-size: 24px; font-weight: 700; color: var(--primary); }
-        
-        .checkout-btn { width: 100%; padding: 18px; font-size: 18px; margin-top: 20px; border-radius: 12px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Unit Badge */
         .unit-badge { display: inline-block; padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 12px; font-weight: 600; margin-left: 5px; }
 
         /* Modal */
         #camera-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; box-shadow: var(--shadow-lg); }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* --- THERMAL PRINTING CSS (NO CHEAP UI HERE) --- */
+        /* Print Media CSS */
         #print-section { display: none; }
-        
         @media print {
             body * { visibility: hidden !important; }
             body { background: white; margin: 0; padding: 0; }
             #print-section, #print-section * { visibility: visible !important; }
             #print-section { 
-                position: absolute; left: 0; top: 0; 
-                width: 80mm; /* Standard Thermal Roll */
-                padding: 5mm; 
-                font-family: 'Courier New', Courier, monospace; 
-                font-size: 12px; color: #000;
+                position: absolute; left: 0; top: 0; width: 80mm; padding: 5mm; 
+                font-family: monospace; font-size: 12px; color: #000;
             }
             .p-center { text-align: center; }
-            .p-bold { font-weight: bold; }
             .p-line { border-top: 1px dashed #000; margin: 8px 0; }
             .p-table { width: 100%; border-collapse: collapse; }
-            .p-table th, .p-table td { text-align: left; padding: 4px 0; vertical-align: top; }
+            .p-table th, .p-table td { text-align: left; padding: 4px 0; }
             .p-table th:last-child, .p-table td:last-child { text-align: right; }
-            .p-table td { border-bottom: 1px dotted #ccc; }
         }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="brand">
             <h1>BARAGADHI</h1>
@@ -143,9 +121,7 @@
         </div>
     </div>
 
-    <!-- MAIN AREA -->
     <div class="main-wrapper">
-        <!-- HEADER -->
         <div class="top-header">
             <h2 id="page-title">Point of Sale</h2>
             <div class="clock"><i class="far fa-clock"></i> <span id="current-date"></span></div>
@@ -155,39 +131,32 @@
         <div id="pos-section" class="section active">
             <div class="pos-grid">
                 
-                <!-- Left Column: Scanning & Selection -->
                 <div class="card">
                     <div class="card-title"><i class="fas fa-barcode"></i> Scan & Add Items</div>
-                    
                     <div class="input-group">
                         <label>Scan Barcode (Keep cursor here)</label>
                         <div class="row">
-                            <div class="input-wrapper" style="flex: 1;">
+                            <div class="input-wrapper">
                                 <i class="fas fa-search"></i>
                                 <input type="text" id="barcode-scanner" placeholder="Scan using physical machine..." autofocus onkeypress="handleBarcodeScan(event)">
                             </div>
-                            <button class="btn btn-primary" onclick="openCameraScanner()"><i class="fas fa-camera"></i> Mobile Camera</button>
+                            <button class="btn btn-primary" onclick="openCameraScanner('pos')"><i class="fas fa-camera"></i> Mobile Camera</button>
                         </div>
                     </div>
-
                     <div style="border-top: 1px dashed var(--border); margin: 20px 0;"></div>
-
-                    <div class="card-title"><i class="fas fa-hand-pointer"></i> Manual Selection</div>
-                    <div class="row" style="align-items: flex-end;">
-                        <div class="input-group col" style="flex: 2;">
-                            <label>Select Item</label>
+                    <div class="row" style="align-items: flex-end; margin-bottom: 20px;">
+                        <div class="input-group" style="flex: 2;">
+                            <label>Manual Select Item</label>
                             <select id="manual-item"></select>
                         </div>
-                        <div class="input-group col">
+                        <div class="input-group" style="flex: 1;">
                             <label>Quantity</label>
-                            <!-- Note: step="any" allows decimals like 1.5 for KG -->
                             <input type="number" id="manual-qty" value="1" step="any" min="0.1">
                         </div>
                         <div class="input-group" style="width: auto;">
-                            <button class="btn btn-success" style="padding: 12px 20px;" onclick="addManualItem()"><i class="fas fa-plus"></i> Add</button>
+                            <button class="btn btn-success" onclick="addManualItem()"><i class="fas fa-plus"></i> Add</button>
                         </div>
                     </div>
-
                     <div class="table-container">
                         <table>
                             <thead><tr><th>Item Details</th><th>Price</th><th>Stock Left</th></tr></thead>
@@ -196,54 +165,46 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Cart & Checkout -->
                 <div class="card" style="background: #f8fafc;">
                     <div class="card-title"><i class="fas fa-shopping-cart"></i> Current Order</div>
-                    
-                    <div class="row">
-                        <div class="input-group col">
-                            <div class="input-wrapper">
-                                <i class="fas fa-phone"></i>
-                                <input type="text" id="cust-phone" placeholder="Customer Phone" onkeyup="checkCustomer()">
-                            </div>
-                        </div>
-                        <div class="input-group col">
-                            <div class="input-wrapper">
-                                <i class="fas fa-user"></i>
-                                <input type="text" id="cust-name" placeholder="Customer Name">
-                            </div>
-                        </div>
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="input-wrapper" style="flex: 1;"><i class="fas fa-phone"></i><input type="text" id="cust-phone" placeholder="Customer Phone" onkeyup="checkCustomer()"></div>
+                        <div class="input-wrapper" style="flex: 1;"><i class="fas fa-user"></i><input type="text" id="cust-name" placeholder="Customer Name"></div>
                     </div>
-
-                    <div class="table-container" style="background: white;">
+                    <div class="table-container">
                         <table>
                             <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead>
                             <tbody id="cart-table"></tbody>
                         </table>
                     </div>
-
-                    <div class="cart-footer">
-                        <div class="summary-row"><span>Total Items:</span> <span id="item-count" class="p-bold">0</span></div>
-                        <div class="summary-total"><span>Grand Total:</span> <span id="grand-total">₹0.00</span></div>
-                        <button class="btn btn-success checkout-btn" onclick="generateBill()">
-                            <i class="fas fa-print"></i> Print Bill & Checkout
-                        </button>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 2px dashed var(--border); display: flex; justify-content: space-between; font-size: 24px; font-weight: 700; color: var(--primary);">
+                        <span>Grand Total:</span> <span id="grand-total">₹0.00</span>
                     </div>
+                    <button class="btn btn-success" style="width: 100%; padding: 18px; font-size: 18px; margin-top: 15px;" onclick="generateBill()">
+                        <i class="fas fa-print"></i> Print Bill & Checkout
+                    </button>
                 </div>
 
             </div>
         </div>
 
-        <!-- INVENTORY SECTION -->
+        <!-- INVENTORY SECTION (FIXED LAYOUT) -->
         <div id="inventory-section" class="section">
             <div class="card">
                 <div class="card-title"><i class="fas fa-box-open"></i> Add New Product to Inventory</div>
                 
-                <div class="row">
-                    <div class="input-group col"><label>Barcode</label><input type="text" id="inv-barcode" placeholder="Scan or type barcode"></div>
-                    <div class="input-group col" style="flex: 1.5;"><label>Product Name</label><input type="text" id="inv-name" placeholder="E.g., Ashirvad Atta"></div>
-                    <div class="input-group col"><label>Selling Price (₹)</label><input type="number" id="inv-price" placeholder="0.00" step="any"></div>
-                    <div class="input-group col">
+                <!-- Fixed Grid Form -->
+                <div class="inventory-form-grid">
+                    <div class="input-group">
+                        <label>Barcode</label>
+                        <div class="row" style="gap: 5px;">
+                            <input type="text" id="inv-barcode" placeholder="Scan/Type" style="flex: 1;">
+                            <button class="btn btn-primary btn-icon-only" onclick="openCameraScanner('inv')" title="Scan with Camera"><i class="fas fa-camera"></i></button>
+                        </div>
+                    </div>
+                    <div class="input-group"><label>Product Name</label><input type="text" id="inv-name" placeholder="E.g., Kajal"></div>
+                    <div class="input-group"><label>Selling Price (₹)</label><input type="number" id="inv-price" placeholder="0.00" step="any"></div>
+                    <div class="input-group">
                         <label>Unit Type</label>
                         <select id="inv-unit">
                             <option value="Pcs">Pieces (Pcs)</option>
@@ -252,13 +213,13 @@
                             <option value="Ltr">Liter (Ltr)</option>
                         </select>
                     </div>
-                    <div class="input-group col"><label>Total Stock</label><input type="number" id="inv-stock" placeholder="0" step="any"></div>
-                    <div class="input-group" style="display: flex; align-items: flex-end;">
-                        <button class="btn btn-primary" style="height: 45px;" onclick="addInventory()"><i class="fas fa-save"></i> Save Product</button>
+                    <div class="input-group"><label>Total Stock</label><input type="number" id="inv-stock" placeholder="0" step="any"></div>
+                    <div class="input-group">
+                        <button class="btn btn-primary" style="width: 100%; height: 46px;" onclick="addInventory()"><i class="fas fa-save"></i> Save Product</button>
                     </div>
                 </div>
 
-                <div class="table-container" style="margin-top: 20px;">
+                <div class="table-container">
                     <table>
                         <thead><tr><th>Barcode</th><th>Product Name</th><th>Price</th><th>Stock Status</th><th>Action</th></tr></thead>
                         <tbody id="inv-table"></tbody>
@@ -273,7 +234,7 @@
                 <div class="card-title"><i class="fas fa-users"></i> Customer Database</div>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Total Store Visits</th></tr></thead>
+                        <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Total Visits</th></tr></thead>
                         <tbody id="cust-table"></tbody>
                     </table>
                 </div>
@@ -284,26 +245,21 @@
     <!-- Camera Scanning Modal -->
     <div id="camera-modal">
         <div class="modal-content">
-            <h2 style="margin-bottom: 10px; color: var(--secondary);">Scan Product</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Point camera at the barcode.</p>
+            <h2 style="margin-bottom: 10px;">Scan Barcode</h2>
             <div id="reader" style="border-radius: 12px; overflow: hidden; margin-bottom: 20px;"></div>
-            <button class="btn btn-danger" style="width: 100%; padding: 15px; font-size: 16px;" onclick="closeCameraScanner()">Cancel Scanning</button>
+            <button class="btn btn-danger" style="width: 100%;" onclick="closeCameraScanner()">Cancel</button>
         </div>
     </div>
 
-    <!-- THERMAL PRINT RECEIPT (Hidden on Screen, Visible on Print) -->
+    <!-- THERMAL PRINT SECTION -->
     <div id="print-section">
         <div class="p-center">
-            <h2 style="margin: 0; font-size: 18px;">BARAGADHI RETAIL</h2>
+            <h2 style="margin: 0;">BARAGADHI RETAIL</h2>
             <p style="margin: 2px 0;">Supermart</p>
-            <p style="margin: 2px 0;">Gorakhpur, UP</p>
         </div>
         <div class="p-line"></div>
-        <div style="display: flex; justify-content: space-between;">
-            <span>Date: <span id="print-date"></span></span>
-            <span>Time: <span id="print-time"></span></span>
-        </div>
-        <p style="margin: 2px 0;">Customer: <span id="print-cust-name" class="p-bold"></span></p>
+        <p style="margin: 2px 0;">Date: <span id="print-date"></span></p>
+        <p style="margin: 2px 0;">Customer: <span id="print-cust-name" style="font-weight:bold;"></span></p>
         <p style="margin: 2px 0;">Phone: <span id="print-cust-phone"></span></p>
         <div class="p-line"></div>
         <table class="p-table">
@@ -311,47 +267,33 @@
             <tbody id="print-cart-items"></tbody>
         </table>
         <div class="p-line"></div>
-        <div style="display: flex; justify-content: space-between; font-size: 16px;" class="p-bold">
-            <span>GRAND TOTAL:</span><span id="print-total">₹0.00</span>
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+            <span>TOTAL:</span><span id="print-total">₹0.00</span>
         </div>
         <div class="p-line"></div>
-        <div class="p-center">
-            <p style="margin: 5px 0;">*** Thank You for Visiting! ***</p>
-            <p style="margin: 0; font-size: 10px;">Powered by NextGen Systems</p>
-        </div>
+        <div class="p-center"><p>Thank You! Visit Again</p></div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
     <script>
-        // Data Storage
-        let inventory = JSON.parse(localStorage.getItem('baragadhi_inv_v2')) || [];
-        let customers = JSON.parse(localStorage.getItem('baragadhi_cust_v2')) || {};
+        let inventory = JSON.parse(localStorage.getItem('baragadhi_inv_v3')) || [];
+        let customers = JSON.parse(localStorage.getItem('baragadhi_cust_v3')) || {};
         let cart = [];
         let html5QrCode;
+        let activeScannerMode = ''; // 'pos' or 'inv'
 
-        // Clock Update
-        setInterval(() => { 
-            let d = new Date();
-            document.getElementById('current-date').innerText = d.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }); 
-        }, 1000);
+        setInterval(() => { document.getElementById('current-date').innerText = new Date().toLocaleString('en-IN'); }, 1000);
 
-        // Navigation
         function switchTab(tab) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tab + '-section').classList.add('active');
-            
-            // Set active button
             event.currentTarget.classList.add('active');
-            
             let titles = { 'pos': 'Point of Sale', 'inventory': 'Inventory Management', 'customers': 'Customer Directory' };
             document.getElementById('page-title').innerText = titles[tab];
-            
             if(tab === 'pos') document.getElementById('barcode-scanner').focus();
             updateUI();
         }
 
-        // --- INVENTORY ---
         function addInventory() {
             let barcode = document.getElementById('inv-barcode').value.trim();
             let name = document.getElementById('inv-name').value.trim();
@@ -359,69 +301,65 @@
             let unit = document.getElementById('inv-unit').value;
             let stock = parseFloat(document.getElementById('inv-stock').value);
 
-            if(!barcode || !name || isNaN(price) || isNaN(stock)) return alert("Please fill all fields correctly!");
+            if(!barcode || !name || isNaN(price) || isNaN(stock)) return alert("Please fill all fields!");
             
             let existingIdx = inventory.findIndex(i => i.barcode === barcode);
             if(existingIdx >= 0) {
                 inventory[existingIdx].stock += stock; 
-                inventory[existingIdx].price = price;
-                inventory[existingIdx].unit = unit;
+                inventory[existingIdx].price = price; inventory[existingIdx].unit = unit;
             } else {
                 inventory.push({ barcode, name, price, unit, stock });
             }
             
-            localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
-            
-            document.getElementById('inv-barcode').value = '';
-            document.getElementById('inv-name').value = '';
-            document.getElementById('inv-price').value = '';
-            document.getElementById('inv-stock').value = '';
-            
-            updateUI(); 
-            alert("Product Saved Successfully!");
+            localStorage.setItem('baragadhi_inv_v3', JSON.stringify(inventory));
+            document.getElementById('inv-barcode').value = ''; document.getElementById('inv-name').value = '';
+            document.getElementById('inv-price').value = ''; document.getElementById('inv-stock').value = '';
+            updateUI(); alert("Saved!");
         }
 
         function deleteItem(index) {
-            if(confirm("Are you sure you want to delete this product?")) {
+            if(confirm("Delete this product?")) {
                 inventory.splice(index, 1);
-                localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
-                updateUI();
+                localStorage.setItem('baragadhi_inv_v3', JSON.stringify(inventory)); updateUI();
             }
         }
 
-        // --- POS SCANNER LOGIC ---
         function handleBarcodeScan(e) {
             if(e.key === 'Enter') {
                 let barcode = e.target.value.trim();
                 let item = inventory.find(i => i.barcode === barcode);
-                if(item) { addToCart(item, 1); playBeepSound(); } 
-                else { alert("Product not found!"); }
-                e.target.value = '';
-                e.target.focus();
+                if(item) { addToCart(item, 1); playBeepSound(); } else { alert("Product not found!"); }
+                e.target.value = ''; e.target.focus();
             }
         }
 
-        // --- CAMERA SCANNER ---
-        function openCameraScanner() {
+        // SMART CAMERA SCANNER
+        function openCameraScanner(mode) {
+            activeScannerMode = mode;
             document.getElementById('camera-modal').style.display = 'flex';
             html5QrCode = new Html5Qrcode("reader");
             html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 150 } }, 
             (decodedText) => {
                 closeCameraScanner();
-                let item = inventory.find(i => i.barcode === decodedText);
-                if(item) { addToCart(item, 1); playBeepSound(); } 
-                else { alert("Product not found!"); }
+                playBeepSound();
+                if(activeScannerMode === 'pos') {
+                    let item = inventory.find(i => i.barcode === decodedText);
+                    if(item) { addToCart(item, 1); } else { alert("Product not found in inventory!"); }
+                } else if(activeScannerMode === 'inv') {
+                    document.getElementById('inv-barcode').value = decodedText;
+                    document.getElementById('inv-name').focus(); // Auto focus to next field
+                }
             }).catch(err => {
-                alert("Camera error. Check permissions.");
-                closeCameraScanner();
+                alert("Camera error. Please allow permissions."); closeCameraScanner();
             });
         }
+
         function closeCameraScanner() {
             document.getElementById('camera-modal').style.display = 'none';
             if(html5QrCode) { try { html5QrCode.stop().then(() => html5QrCode.clear()); } catch(e) {} }
+            activeScannerMode = '';
         }
 
-        // --- CART LOGIC ---
         function addManualItem() {
             let barcode = document.getElementById('manual-item').value;
             let qty = parseFloat(document.getElementById('manual-qty').value);
@@ -433,156 +371,103 @@
         function addToCart(item, qty) {
             let cartItem = cart.find(c => c.barcode === item.barcode);
             let currentCartQty = cartItem ? cartItem.qty : 0;
+            if(item.stock < (currentCartQty + qty)) return alert(`Only ${item.stock} ${item.unit} available.`);
 
-            if(item.stock < (currentCartQty + qty)) {
-                return alert(`Stock Low! Only ${item.stock} ${item.unit} available.`);
-            }
-
-            if(cartItem) { cartItem.qty += qty; } 
-            else { cart.push({ barcode: item.barcode, name: item.name, price: item.price, unit: item.unit, qty: qty }); }
+            if(cartItem) { cartItem.qty += qty; } else { cart.push({ ...item, qty: qty }); }
             updateCartUI();
         }
 
         function removeFromCart(barcode) {
-            cart = cart.filter(c => c.barcode !== barcode);
-            updateCartUI();
+            cart = cart.filter(c => c.barcode !== barcode); updateCartUI();
         }
 
         function updateCartUI() {
-            let tbody = ''; let total = 0; let itemCount = 0;
+            let tbody = ''; let total = 0;
             cart.forEach(c => {
-                let amt = c.price * c.qty; total += amt; itemCount += 1;
+                let amt = c.price * c.qty; total += amt;
                 tbody += `<tr>
-                    <td><div>${c.name}</div><div style="font-size:11px; color:#64748b;">${c.barcode}</div></td>
-                    <td class="p-bold">${c.qty} <span class="unit-badge">${c.unit}</span></td>
-                    <td class="p-bold">₹${amt.toFixed(2)}</td>
+                    <td>${c.name}</td>
+                    <td style="font-weight:bold;">${c.qty} <span class="unit-badge">${c.unit}</span></td>
+                    <td style="font-weight:bold;">₹${amt.toFixed(2)}</td>
                     <td><button class="btn-danger" onclick="removeFromCart('${c.barcode}')"><i class="fas fa-trash"></i></button></td>
                 </tr>`;
             });
             document.getElementById('cart-table').innerHTML = tbody;
-            document.getElementById('item-count').innerText = itemCount;
             document.getElementById('grand-total').innerText = `₹${total.toFixed(2)}`;
         }
 
         function playBeepSound() {
             try {
                 let ctx = new (window.AudioContext || window.webkitAudioContext)();
-                let osc = ctx.createOscillator();
-                osc.type = "sine"; osc.frequency.value = 800;
-                osc.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.1);
+                let osc = ctx.createOscillator(); osc.type = "sine"; osc.frequency.value = 800;
+                osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
             } catch(e) {}
         }
 
         function checkCustomer() {
             let phone = document.getElementById('cust-phone').value;
-            if(phone.length >= 10 && customers[phone]) {
-                document.getElementById('cust-name').value = customers[phone].name;
-            }
+            if(phone.length >= 10 && customers[phone]) document.getElementById('cust-name').value = customers[phone].name;
         }
 
-        // --- CHECKOUT & PRINT ---
         function generateBill() {
-            if(cart.length === 0) return alert("Cart is empty! Add items first.");
-            
+            if(cart.length === 0) return alert("Cart is empty!");
             let phone = document.getElementById('cust-phone').value || "Walk-in";
             let name = document.getElementById('cust-name').value || "Customer";
             let total = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
 
-            // Save Customer
             if(phone !== "Walk-in") {
                 if(!customers[phone]) customers[phone] = { name: name, visits: 0 };
-                customers[phone].visits += 1;
-                customers[phone].name = name; 
-                localStorage.setItem('baragadhi_cust_v2', JSON.stringify(customers));
+                customers[phone].visits += 1; customers[phone].name = name; 
+                localStorage.setItem('baragadhi_cust_v3', JSON.stringify(customers));
             }
 
-            // Deduct Stock
             cart.forEach(cItem => {
                 let invItem = inventory.find(i => i.barcode === cItem.barcode);
                 if(invItem) invItem.stock -= cItem.qty;
             });
-            localStorage.setItem('baragadhi_inv_v2', JSON.stringify(inventory));
+            localStorage.setItem('baragadhi_inv_v3', JSON.stringify(inventory));
 
-            // Prepare Print Layout
-            let d = new Date();
-            document.getElementById('print-date').innerText = d.toLocaleDateString('en-IN');
-            document.getElementById('print-time').innerText = d.toLocaleTimeString('en-IN');
+            document.getElementById('print-date').innerText = new Date().toLocaleString('en-IN');
             document.getElementById('print-cust-name').innerText = name;
             document.getElementById('print-cust-phone').innerText = phone;
             
             let printTbody = '';
-            cart.forEach(c => { 
-                printTbody += `<tr>
-                    <td>${c.name}<br><small style="font-size:10px;">₹${c.price}/${c.unit}</small></td>
-                    <td>${c.qty} ${c.unit}</td>
-                    <td>₹${(c.price * c.qty).toFixed(2)}</td>
-                </tr>`; 
-            });
+            cart.forEach(c => { printTbody += `<tr><td>${c.name}</td><td>${c.qty} ${c.unit}</td><td>₹${(c.price * c.qty).toFixed(2)}</td></tr>`; });
             document.getElementById('print-cart-items').innerHTML = printTbody;
             document.getElementById('print-total').innerText = `₹${total.toFixed(2)}`;
 
-            // Call Browser Print
             window.print();
 
-            // Clear Cart after Print
-            cart = [];
-            document.getElementById('cust-phone').value = '';
-            document.getElementById('cust-name').value = '';
-            updateCartUI(); 
-            updateUI();
-            document.getElementById('barcode-scanner').focus();
+            cart = []; document.getElementById('cust-phone').value = ''; document.getElementById('cust-name').value = '';
+            updateCartUI(); updateUI(); document.getElementById('barcode-scanner').focus();
         }
 
-        // --- UPDATE UI ELEMENTS ---
         function updateUI() {
             let invHtml = ''; let stockHtml = ''; let manualOptions = '<option value="">-- Search & Select --</option>';
             
             inventory.forEach((item, idx) => {
-                let isLowStock = item.stock <= 5;
-                let stockColor = isLowStock ? 'color: var(--danger); font-weight: bold;' : 'color: var(--success); font-weight: 600;';
-                
-                // Inventory Page Table
+                let stockColor = item.stock <= 5 ? 'color: var(--danger);' : 'color: var(--success);';
                 invHtml += `<tr>
-                    <td><i class="fas fa-barcode" style="color:#cbd5e1; margin-right:5px;"></i> ${item.barcode}</td>
-                    <td class="p-bold">${item.name}</td>
-                    <td>₹${item.price} / ${item.unit}</td>
-                    <td style="${stockColor}">${item.stock} ${item.unit}</td>
+                    <td>${item.barcode}</td><td style="font-weight:bold;">${item.name}</td>
+                    <td>₹${item.price}/${item.unit}</td><td style="font-weight:bold; ${stockColor}">${item.stock} ${item.unit}</td>
                     <td><button class="btn-danger" onclick="deleteItem(${idx})"><i class="fas fa-trash"></i></button></td>
                 </tr>`;
-                
-                // POS Quick View Table
-                stockHtml += `<tr>
-                    <td><div>${item.name}</div><div style="font-size:11px; color:#64748b;">${item.barcode}</div></td>
-                    <td>₹${item.price}/${item.unit}</td>
-                    <td style="${stockColor}">${item.stock} ${item.unit}</td>
-                </tr>`;
-                
-                // Dropdown Select
-                if(item.stock > 0) { 
-                    manualOptions += `<option value="${item.barcode}">${item.name} - ₹${item.price} (Stock: ${item.stock} ${item.unit})</option>`; 
-                }
+                stockHtml += `<tr><td><div>${item.name}</div></td><td>₹${item.price}</td><td style="${stockColor}">${item.stock} ${item.unit}</td></tr>`;
+                if(item.stock > 0) { manualOptions += `<option value="${item.barcode}">${item.name} (Stock: ${item.stock} ${item.unit})</option>`; }
             });
 
             document.getElementById('inv-table').innerHTML = invHtml;
             document.getElementById('quick-stock-table').innerHTML = stockHtml;
             document.getElementById('manual-item').innerHTML = manualOptions;
 
-            // Customers Table
             let custHtml = '';
             for(let phone in customers) { 
-                custHtml += `<tr>
-                    <td class="p-bold"><i class="fas fa-phone-alt" style="color:#cbd5e1; margin-right:8px;"></i>${phone}</td>
-                    <td>${customers[phone].name}</td>
-                    <td><span class="unit-badge" style="background:#dcfce7; color:#166534;">${customers[phone].visits} Visits</span></td>
-                </tr>`; 
+                custHtml += `<tr><td style="font-weight:bold;">${phone}</td><td>${customers[phone].name}</td><td><span class="unit-badge">${customers[phone].visits} Visits</span></td></tr>`; 
             }
             document.getElementById('cust-table').innerHTML = custHtml;
         }
 
-        // Initialize App
-        updateUI();
-        document.getElementById('barcode-scanner').focus();
+        updateUI(); document.getElementById('barcode-scanner').focus();
     </script>
 </body>
 </html>
