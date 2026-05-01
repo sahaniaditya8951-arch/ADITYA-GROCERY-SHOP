@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baragadhi Pro ERP - Ultimate Business Suite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -14,10 +14,10 @@
 
     <style>
         :root {
-            --primary: #0f172a; --secondary: #2563eb; --accent: #0ea5e9;
+            --primary: #0f172a; --secondary: #4f46e5; --accent: #0ea5e9;
             --bg: #f8fafc; --surface: #ffffff; --text: #1e293b;
             --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-            --border: #e2e8f0; --shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --border: #e2e8f0; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
@@ -28,58 +28,55 @@
         .brand { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .brand h1 { font-size: 24px; font-weight: 800; color: white; }
         .brand span { font-size: 10px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
-        
         .nav-menu { padding: 20px 0; flex: 1; }
-        .nav-btn { width: 100%; padding: 16px 25px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 15px; font-size: 15px; transition: 0.3s; }
+        .nav-btn { width: 100%; padding: 16px 25px; background: transparent; border: none; color: #94a3b8; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 15px; font-size: 15px; transition: 0.3s; font-weight: 500; }
         .nav-btn:hover, .nav-btn.active { color: white; background: rgba(255,255,255,0.05); border-left: 5px solid var(--secondary); }
 
         /* Main Content */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .header { background: var(--surface); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .header { background: var(--surface); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
         .section { display: none; padding: 25px 40px; height: calc(100vh - 70px); overflow-y: auto; }
         .section.active { display: block; }
 
         /* Dashboard UI */
         .pos-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 25px; height: 100%; }
-        .card { background: var(--surface); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; }
-        .card-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
+        .card { background: var(--surface); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; }
+        .card-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 
         /* Forms & Inputs */
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; align-items: end; }
-        .input-group label { display: block; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; font-size: 14px; transition: 0.3s; }
-        input:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 15px; align-items: end; }
+        .input-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: #f8fafc; font-size: 15px; transition: 0.3s; outline: none; }
+        input:focus, select:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
 
         /* Buttons */
-        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 14px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px; }
         .btn-primary { background: var(--secondary); color: white; }
+        .btn-primary:hover { background: #4338ca; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: #fee2e2; color: var(--danger); }
-        .btn-warning { background: var(--warning); color: white; }
-
-        /* QR Payment Area */
-        #qr-box { display: none; text-align: center; margin-top: 20px; padding: 20px; border: 2px dashed var(--secondary); border-radius: 15px; background: #eff6ff; }
-        #qrcode { display: inline-block; padding: 12px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
+        
         /* Tables */
-        .table-container { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 15px; background: white; }
+        .table-container { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 10px; background: white; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f1f5f9; padding: 14px; text-align: left; font-size: 12px; color: var(--text-muted); font-weight: 700; }
-        td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; }
+        th { background: #f1f5f9; padding: 12px; text-align: left; font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; }
 
-        /* Reports Stats */
-        .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
-        .stat-card { padding: 25px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* Modals (Quantity & Payment) */
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); z-index:1000; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+        .modal-content { background:white; padding:30px; border-radius:16px; width:90%; max-width:450px; text-align:center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        
+        /* Payment Specific */
+        .pay-amount-box { background: #eff6ff; padding: 20px; border-radius: 12px; margin: 15px 0; border: 2px dashed var(--secondary); }
+        .pay-amount-box h1 { font-size: 40px; color: var(--secondary); margin: 10px 0 0 0; }
+        #qrcode-pay { display: inline-block; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 15px; }
 
-        /* Scanner Modal */
-        #cam-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.9); z-index:1000; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
-        .modal-content { background:white; padding:30px; border-radius:24px; width:90%; max-width:450px; text-align:center; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="brand"><h1>BARAGADHI</h1><span>ULTIMATE ERP 2026</span></div>
+        <div class="brand"><h1>BARAGADHI</h1><span>PRO ERP 2026</span></div>
         <div class="nav-menu">
             <button class="nav-btn active" onclick="switchTab('pos')"><i class="fas fa-desktop"></i> POS & Billing</button>
             <button class="nav-btn" onclick="switchTab('inventory')"><i class="fas fa-boxes-stacked"></i> Smart Inventory</button>
@@ -97,53 +94,56 @@
         <div id="pos-section" class="section active">
             <div class="pos-grid">
                 <div class="card">
-                    <div class="card-title"><i class="fas fa-shopping-basket"></i> Create New Bill</div>
-                    <div class="grid-3">
-                        <div style="grid-column: span 2;">
-                            <label>Product Scanner / Search</label>
-                            <input type="text" id="pos-barcode" placeholder="Scan Barcode or Search Item..." onkeypress="handlePosScan(event)">
+                    <div class="card-title"><i class="fas fa-shopping-basket"></i> Create Bill</div>
+                    <div class="grid-layout" style="grid-template-columns: 2fr 1fr;">
+                        <div class="input-group">
+                            <label>Barcode Scanner (Auto-detects)</label>
+                            <input type="text" id="pos-barcode" placeholder="Scan Barcode here..." onkeypress="handlePosScan(event)">
                         </div>
-                        <button class="btn btn-primary" onclick="openScanner('pos')"><i class="fas fa-camera"></i> Scan Camera</button>
+                        <button class="btn btn-primary" onclick="openScanner('pos')" style="height: 45px;"><i class="fas fa-camera"></i> Camera Scan</button>
                     </div>
-                    <div class="grid-3">
-                        <div style="grid-column: span 2;"><select id="manual-select"></select></div>
-                        <button class="btn btn-primary" onclick="addManual()"><i class="fas fa-plus"></i> Add Item</button>
+                    <div class="grid-layout" style="grid-template-columns: 2fr 1fr;">
+                        <div class="input-group">
+                            <label>Manual Item Search</label>
+                            <select id="manual-select"></select>
+                        </div>
+                        <button class="btn btn-primary" onclick="triggerManualAdd()" style="height: 45px;"><i class="fas fa-plus"></i> Add Item</button>
                     </div>
                     <div class="table-container" style="height: 350px; overflow-y: auto;">
                         <table>
-                            <thead><tr><th>Item Name</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr></thead>
+                            <thead><tr><th>Item Name</th><th>Qty & Unit</th><th>Total</th><th>Action</th></tr></thead>
                             <tbody id="cart-table"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <div class="card" style="background: #f8fafc;">
-                    <div class="card-title"><i class="fas fa-user-check"></i> Customer & Payment</div>
-                    <div class="grid-3" style="grid-template-columns: 1fr 1fr;">
-                        <input type="text" id="cust-phone" placeholder="Phone Number" onkeyup="checkCustomer()">
-                        <input type="text" id="cust-name" placeholder="Customer Name">
+                    <div class="card-title"><i class="fas fa-cash-register"></i> Customer Details</div>
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <label>Phone Number</label>
+                        <input type="text" id="cust-phone" placeholder="10 Digit Number" onkeyup="checkCustomer()">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 20px;">
+                        <label>Customer Name</label>
+                        <input type="text" id="cust-name" placeholder="Name">
                     </div>
                     
-                    <div style="background: white; padding: 25px; border-radius: 15px; margin: 20px 0; text-align: center; border: 1px solid var(--border);">
-                        <p style="font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px;">Grand Total</p>
-                        <h1 style="font-size: 42px; font-weight: 800; color: var(--secondary);">₹<span id="grand-total">0.00</span></h1>
+                    <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow);">
+                        <p style="font-size: 12px; font-weight: 700; color: var(--text-muted);">GRAND TOTAL</p>
+                        <h1 style="font-size: 40px; color: var(--secondary);">₹<span id="grand-total">0.00</span></h1>
                     </div>
 
-                    <label>PAYMENT METHOD</label>
-                    <select id="pay-mode" onchange="toggleQR()" style="margin-top: 5px; height: 50px; font-weight: 700; border: 2px solid var(--secondary);">
-                        <option value="Cash">💵 Cash Payment</option>
-                        <option value="UPI">📱 UPI Payment (Dynamic QR)</option>
-                        <option value="Udhaar">📒 Udhaar (Credit Khata)</option>
-                    </select>
-
-                    <div id="qr-box">
-                        <p style="font-weight: 800; font-size: 13px; color: var(--secondary); margin-bottom: 12px;">SCAN TO PAY NOW</p>
-                        <div id="qrcode"></div>
-                        <p style="font-size: 11px; margin-top: 10px; color: var(--text-muted);">UPI ID: adityaa2007@ybl</p>
+                    <div class="input-group" style="margin-top: 20px;">
+                        <label>Payment Method</label>
+                        <select id="pay-mode" style="border: 2px solid var(--secondary); font-weight: bold;">
+                            <option value="UPI">📱 UPI Payment (QR Code)</option>
+                            <option value="Cash">💵 Cash Payment</option>
+                            <option value="Udhaar">📒 Udhaar (Credit Khata)</option>
+                        </select>
                     </div>
 
-                    <button class="btn btn-success" style="width: 100%; margin-top: 20px; padding: 18px; font-size: 18px;" onclick="processBill()">
-                        <i class="fas fa-file-invoice"></i> FINISH & DOWNLOAD PDF
+                    <button class="btn btn-success" style="width: 100%; margin-top: 20px; padding: 18px; font-size: 16px;" onclick="initiatePayment()">
+                        PROCEED TO PAYMENT <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -152,15 +152,31 @@
         <div id="inventory-section" class="section">
             <div class="card">
                 <div class="card-title"><i class="fas fa-plus-circle"></i> Add New Stock</div>
-                <div class="grid-3" style="grid-template-columns: repeat(6, 1fr);">
-                    <div style="grid-column: span 1;"><label>Barcode</label><input type="text" id="inv-barcode"></div>
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="openScanner('inv')"><i class="fas fa-camera"></i></button>
-                    <div style="grid-column: span 1;"><label>Name</label><input type="text" id="inv-name"></div>
-                    <div><label>Price</label><input type="number" id="inv-price"></div>
-                    <div><label>Unit</label><select id="inv-unit"><option>Pcs</option><option>Kg</option><option>Ltr</option><option>Gm</option></select></div>
-                    <div><label>Stock</label><input type="number" id="inv-stock"></div>
+                <div class="grid-layout">
+                    <div class="input-group">
+                        <label>Barcode</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="inv-barcode">
+                            <button class="btn btn-primary" onclick="openScanner('inv')"><i class="fas fa-camera"></i></button>
+                        </div>
+                    </div>
+                    <div class="input-group"><label>Product Name</label><input type="text" id="inv-name" placeholder="e.g. Kaju Packet"></div>
+                    <div class="input-group"><label>Selling Price (₹)</label><input type="number" id="inv-price" step="any"></div>
+                    
+                    <div class="input-group">
+                        <label>Unit Type</label>
+                        <select id="inv-unit">
+                            <option value="Packet">Packet</option>
+                            <option value="Kg">Kg</option>
+                            <option value="Gram">Gram</option>
+                            <option value="Pcs">Pcs</option>
+                            <option value="Ltr">Liter</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group"><label>Total Stock (Qty)</label><input type="number" id="inv-stock" step="any" placeholder="e.g. 100 or 5.5"></div>
                 </div>
-                <button class="btn btn-primary" style="width: 100%;" onclick="saveInventory()"><i class="fas fa-save"></i> Save Product to Inventory</button>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveInventory()"><i class="fas fa-save"></i> Save Product</button>
             </div>
             <div class="table-container">
                 <table>
@@ -175,7 +191,7 @@
                 <div class="card-title"><i class="fas fa-book"></i> Customer Udhaar Ledger</div>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Pending Dues (Udhaar)</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Pending Udhaar</th><th>Action</th></tr></thead>
                         <tbody id="udhaar-table"></tbody>
                     </table>
                 </div>
@@ -183,12 +199,6 @@
         </div>
 
         <div id="reports-section" class="section">
-            <div class="stat-row">
-                <div class="stat-card" style="background: var(--secondary);"><h5>Total Sales</h5><h2 id="st-total">₹0</h2></div>
-                <div class="stat-card" style="background: var(--success);"><h5>Cash Collection</h5><h2 id="st-cash">₹0</h2></div>
-                <div class="stat-card" style="background: #8b5cf6;"><h5>UPI Received</h5><h2 id="st-upi">₹0</h2></div>
-                <div class="stat-card" style="background: var(--danger);"><h5>Pending Udhaar</h5><h2 id="st-udhaar">₹0</h2></div>
-            </div>
             <div class="card">
                 <div class="card-title" style="justify-content: space-between;">
                     <span>📊 Recent Sales Data</span>
@@ -204,11 +214,54 @@
         </div>
     </div>
 
-    <div id="cam-modal">
+    <div id="qty-modal" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="margin-bottom: 15px; color: var(--primary);">System Scanner</h2>
-            <div id="reader" style="border-radius: 15px; overflow: hidden;"></div>
-            <button class="btn btn-danger" style="width: 100%; margin-top: 20px;" onclick="closeScanner()">CLOSE SCANNER</button>
+            <h2 style="color: var(--primary); margin-bottom: 5px;">Enter Quantity</h2>
+            <p id="qty-item-name" style="font-weight: bold; color: var(--text-muted); margin-bottom: 20px;"></p>
+            
+            <div class="input-group" style="text-align: left; margin-bottom: 20px;">
+                <label>Quantity (in <span id="qty-item-unit" style="color: var(--secondary);"></span>)</label>
+                <input type="number" id="popup-qty-input" step="any" placeholder="e.g. 1, 0.5, 2.5" style="font-size: 24px; font-weight: bold; text-align: center; padding: 15px;">
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px; text-align: center;">Tip: Type 0.5 for half Kg/Liter</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-danger" style="flex: 1;" onclick="closeQtyModal()">Cancel</button>
+                <button class="btn btn-primary" style="flex: 2;" onclick="confirmAddQuantity()">Add to Bill</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="pay-title" style="color: var(--primary);">Awaiting Payment</h2>
+            
+            <div class="pay-amount-box">
+                <p style="font-weight: 700; color: var(--text-muted);">AMOUNT TO PAY</p>
+                <h1 id="pay-modal-amount">₹0.00</h1>
+                <p id="pay-modal-mode" style="font-weight: bold; margin-top: 5px;"></p>
+            </div>
+
+            <div id="upi-qr-section" style="display: none; margin-bottom: 20px;">
+                <p style="font-size: 12px; font-weight: bold; color: var(--text-muted);">ASK CUSTOMER TO SCAN THIS QR</p>
+                <div id="qrcode-pay"></div>
+                <p style="font-size: 11px; margin-top: 10px; color: var(--danger); font-weight: bold;"><i class="fas fa-spinner fa-spin"></i> Waiting for Payment Confirmation...</p>
+            </div>
+
+            <p style="font-size: 12px; margin-bottom: 15px; color: var(--text-muted);">Please confirm only after receiving the amount.</p>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-danger" style="flex: 1;" onclick="closePaymentModal()">Cancel</button>
+                <button class="btn btn-success" style="flex: 2; padding: 15px; font-size: 15px;" onclick="finalizeBillAndPrint()"><i class="fas fa-check-double"></i> Mark as Paid & Generate Bill</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cam-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 15px;">Camera Scanner</h2>
+            <div id="reader" style="border-radius: 12px; overflow: hidden;"></div>
+            <button class="btn btn-danger" style="width: 100%; margin-top: 15px;" onclick="closeScanner()">Close Camera</button>
         </div>
     </div>
 
@@ -217,17 +270,15 @@
         const UPI_ID = "adityaa2007@ybl";
         const STORE = "BARAGADHI SUPERMART";
 
-        // DB Initialization
-        let inventory = JSON.parse(localStorage.getItem('br_inv_final')) || [];
-        let customers = JSON.parse(localStorage.getItem('br_cust_final')) || {};
-        let sales = JSON.parse(localStorage.getItem('br_sales_final')) || [];
+        // DB
+        let inventory = JSON.parse(localStorage.getItem('br_inv_pro')) || [];
+        let customers = JSON.parse(localStorage.getItem('br_cust_pro')) || {};
+        let sales = JSON.parse(localStorage.getItem('br_sales_pro')) || [];
         let cart = [];
-        let qrGenerator = null;
+        let currentItemForQty = null;
 
-        // Clock
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
 
-        // Tab System
         function switchTab(tab) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -237,131 +288,177 @@
             updateUI();
         }
 
-        // PAYMENT GATEWAY (UPI QR)
-        function toggleQR() {
-            const mode = document.getElementById('pay-mode').value;
-            const box = document.getElementById('qr-box');
-            const total = parseFloat(document.getElementById('grand-total').innerText);
-            
-            if(mode === 'UPI' && total > 0) {
-                box.style.display = 'block';
-                const qrDiv = document.getElementById("qrcode");
-                qrDiv.innerHTML = "";
-                const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(STORE)}&am=${total}&cu=INR`;
-                new QRCode(qrDiv, { text: upiUrl, width: 160, height: 160 });
-            } else {
-                box.style.display = 'none';
-            }
-        }
-
-        // INVENTORY LOGIC
+        // ================= INVENTORY =================
         function saveInventory() {
             let b = document.getElementById('inv-barcode').value.trim();
             let n = document.getElementById('inv-name').value.trim();
             let p = parseFloat(document.getElementById('inv-price').value);
-            let u = document.getElementById('inv-unit').value;
+            let u = document.getElementById('inv-unit').value; // Packet, Kg, etc.
             let s = parseFloat(document.getElementById('inv-stock').value);
 
-            if(!b || !n || isNaN(p)) return alert("Please fill all details correctly!");
+            if(!b || !n || isNaN(p) || isNaN(s)) return alert("Fill all details correctly!");
+            
             let idx = inventory.findIndex(i => i.barcode === b);
-            if(idx >= 0) { inventory[idx].stock += s; inventory[idx].price = p; }
+            if(idx >= 0) { inventory[idx].stock += s; inventory[idx].price = p; inventory[idx].unit = u; }
             else { inventory.push({barcode:b, name:n, price:p, unit:u, stock:s}); }
             
-            localStorage.setItem('br_inv_final', JSON.stringify(inventory));
-            updateUI(); alert("Product Saved!");
-            document.getElementById('inv-barcode').value=''; document.getElementById('inv-name').value='';
+            localStorage.setItem('br_inv_pro', JSON.stringify(inventory));
+            updateUI(); alert("Stock Saved!");
+            document.getElementById('inv-barcode').value=''; document.getElementById('inv-name').value=''; document.getElementById('inv-stock').value='';
         }
 
-        // BILLING LOGIC
+        // ================= BILLING & QUANTITY POPUP =================
         function handlePosScan(e) {
             if(e.key === 'Enter') {
                 let item = inventory.find(i => i.barcode === e.target.value.trim());
-                if(item) { addToCart(item, 1); playBeep(); }
-                else alert("Product not found!");
+                if(item) { playBeep(); triggerQtyModal(item); }
+                else alert("Product not found in inventory!");
                 e.target.value = "";
             }
         }
 
-        function addManual() {
+        function triggerManualAdd() {
             let b = document.getElementById('manual-select').value;
             let item = inventory.find(i => i.barcode === b);
-            if(item) { addToCart(item, 1); playBeep(); }
+            if(item) triggerQtyModal(item);
         }
 
-        function addToCart(item, qty) {
-            let inCart = cart.find(c => c.barcode === item.barcode);
+        function triggerQtyModal(item) {
+            currentItemForQty = item;
+            document.getElementById('qty-item-name').innerText = item.name;
+            document.getElementById('qty-item-unit').innerText = item.unit;
+            document.getElementById('popup-qty-input').value = 1; // default
+            document.getElementById('qty-modal').style.display = 'flex';
+            setTimeout(() => document.getElementById('popup-qty-input').focus(), 100);
+        }
+
+        function closeQtyModal() {
+            document.getElementById('qty-modal').style.display = 'none';
+            currentItemForQty = null;
+        }
+
+        function confirmAddQuantity() {
+            let qty = parseFloat(document.getElementById('popup-qty-input').value);
+            if(isNaN(qty) || qty <= 0) return alert("Enter valid quantity!");
+            
+            // Check stock availability
+            let inCart = cart.find(c => c.barcode === currentItemForQty.barcode);
+            let currentCartQty = inCart ? inCart.qty : 0;
+            if(currentItemForQty.stock < (currentCartQty + qty)) {
+                return alert(`Not enough stock! Only ${currentItemForQty.stock} ${currentItemForQty.unit} left.`);
+            }
+
             if(inCart) inCart.qty += qty;
-            else cart.push({...item, qty: qty});
+            else cart.push({...currentItemForQty, qty: qty});
+            
             updateCartUI();
+            closeQtyModal();
         }
 
         function updateCartUI() {
             let h = ''; let total = 0;
             cart.forEach((c, i) => {
                 let t = c.price * c.qty; total += t;
-                h += `<tr><td>${c.name}</td><td>${c.qty} ${c.unit}</td><td>₹${t.toFixed(2)}</td>
-                <td><button class="btn-danger btn" onclick="cart.splice(${i},1);updateCartUI();">X</button></td></tr>`;
+                h += `<tr>
+                    <td><b>${c.name}</b><br><small style="color:gray;">₹${c.price}/${c.unit}</small></td>
+                    <td style="font-weight:bold; color:var(--secondary);">${c.qty} ${c.unit}</td>
+                    <td style="font-weight:bold;">₹${t.toFixed(2)}</td>
+                    <td><button class="btn-danger btn" style="padding: 5px 10px;" onclick="cart.splice(${i},1);updateCartUI();">X</button></td>
+                </tr>`;
             });
             document.getElementById('cart-table').innerHTML = h;
             document.getElementById('grand-total').innerText = total.toFixed(2);
-            if(document.getElementById('pay-mode').value === 'UPI') toggleQR();
         }
 
-        // CHECKOUT & PDF
-        function processBill() {
+        // ================= STRICT PAYMENT GATEWAY =================
+        function initiatePayment() {
             if(cart.length === 0) return alert("Cart is empty!");
+            const total = parseFloat(document.getElementById('grand-total').innerText);
+            const mode = document.getElementById('pay-mode').value;
+            
+            document.getElementById('pay-modal-amount').innerText = `₹${total.toFixed(2)}`;
+            document.getElementById('pay-modal-mode').innerText = `Method: ${mode}`;
+
+            const upiSection = document.getElementById('upi-qr-section');
+            if(mode === 'UPI') {
+                upiSection.style.display = 'block';
+                const qrDiv = document.getElementById("qrcode-pay");
+                qrDiv.innerHTML = "";
+                const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(STORE)}&am=${total}&cu=INR`;
+                new QRCode(qrDiv, { text: upiUrl, width: 180, height: 180, colorDark: "#4f46e5", colorLight: "#ffffff" });
+            } else {
+                upiSection.style.display = 'none';
+            }
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        // THIS FUNCTION RUNS ONLY WHEN MERCHANT CLICKS "MARK AS PAID"
+        function finalizeBillAndPrint() {
             const total = parseFloat(document.getElementById('grand-total').innerText);
             const mode = document.getElementById('pay-mode').value;
             const phone = document.getElementById('cust-phone').value || "Walk-in";
             const name = document.getElementById('cust-name').value || "Customer";
 
+            // Save Sales
             sales.push({time: new Date().toLocaleString(), customer: name, phone: phone, amount: total, mode: mode, items: [...cart]});
-            localStorage.setItem('br_sales_final', JSON.stringify(sales));
+            localStorage.setItem('br_sales_pro', JSON.stringify(sales));
 
+            // Udhaar Update
             if(mode === 'Udhaar') {
                 if(!customers[phone]) customers[phone] = {name: name, udhaar: 0};
                 customers[phone].udhaar += total;
-                localStorage.setItem('br_cust_final', JSON.stringify(customers));
+                localStorage.setItem('br_cust_pro', JSON.stringify(customers));
             }
 
+            // DEDUCT STOCK PERMANENTLY
             cart.forEach(c => {
                 let invI = inventory.find(i => i.barcode === c.barcode);
                 if(invI) invI.stock -= c.qty;
             });
-            localStorage.setItem('br_inv_final', JSON.stringify(inventory));
+            localStorage.setItem('br_inv_pro', JSON.stringify(inventory));
 
+            // Generate Professional PDF
             generateBillPDF(name, phone, total, mode);
 
+            // Close, Clear & Reset
+            closePaymentModal();
             cart = []; updateCartUI(); updateUI();
             document.getElementById('cust-phone').value=''; document.getElementById('cust-name').value='';
-            alert("Bill Completed Successfully!");
         }
 
         function generateBillPDF(name, phone, total, mode) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ format: [80, 160] });
+            
             doc.setFontSize(14); doc.text(STORE, 40, 10, {align: 'center'});
             doc.setFontSize(8); doc.text("GORAKHPUR, UP", 40, 15, {align: 'center'});
             doc.text(`Date: ${new Date().toLocaleDateString()}`, 5, 25);
-            doc.text(`Cust: ${name} (${phone})`, 5, 30);
-            doc.text(`Payment: ${mode}`, 5, 35);
+            doc.text(`Customer: ${name}`, 5, 30);
+            doc.text(`Payment Mode: ${mode}`, 5, 35);
             
             const body = cart.map(c => [c.name, `${c.qty} ${c.unit}`, `₹${(c.qty*c.price).toFixed(2)}`]);
-            doc.autoTable({ startY: 40, head: [['Item', 'Qty', 'Amt']], body: body, theme: 'plain', styles: {fontSize: 7} });
+            doc.autoTable({ startY: 40, margin: {left: 5, right: 5}, head: [['Item', 'Qty', 'Amt']], body: body, theme: 'plain', styles: {fontSize: 7} });
+            
+            doc.setFontSize(10);
             doc.text(`GRAND TOTAL: ₹${total.toFixed(2)}`, 40, doc.lastAutoTable.finalY + 10, {align: 'center'});
+            if(mode === 'Udhaar') doc.text("** UDHAAR KHATA **", 40, doc.lastAutoTable.finalY + 15, {align: 'center'});
+            
             doc.save(`Bill_${phone}_${Date.now()}.pdf`);
         }
 
         function exportReportsPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
             doc.text(`${STORE} - SALES REPORT`, 105, 15, {align: 'center'});
             const body = sales.map(s => [s.time, s.customer, s.mode, `₹${s.amount}`]);
             doc.autoTable({ startY: 25, head: [['Time', 'Customer', 'Mode', 'Amount']], body: body });
             doc.save("Sales_Report.pdf");
         }
 
-        // HELPERS
+        // ================= UTILS & UI =================
         function checkCustomer() {
             let p = document.getElementById('cust-phone').value;
             if(customers[p]) document.getElementById('cust-name').value = customers[p].name;
@@ -370,10 +467,10 @@
         function updateUI() {
             let invH = ''; let selH = '<option value="">-- Select Product --</option>';
             inventory.forEach((item, i) => {
-                let stStyle = item.stock < 5 ? 'color: var(--danger); font-weight:bold;' : '';
-                invH += `<tr><td>${item.barcode}</td><td>${item.name}</td><td>₹${item.price}</td><td style="${stStyle}">${item.stock} ${item.unit}</td>
+                let stStyle = item.stock <= 5 ? 'color: var(--danger); font-weight:bold;' : 'color: var(--success); font-weight:bold;';
+                invH += `<tr><td>${item.barcode}</td><td><b>${item.name}</b></td><td>₹${item.price}</td><td style="${stStyle}">${item.stock} ${item.unit}</td>
                 <td><button class="btn btn-danger" onclick="inventory.splice(${i},1);updateUI();">X</button></td></tr>`;
-                if(item.stock > 0) selH += `<option value="${item.barcode}">${item.name} (Stock: ${item.stock})</option>`;
+                if(item.stock > 0) selH += `<option value="${item.barcode}">${item.name} (Stk: ${item.stock} ${item.unit})</option>`;
             });
             document.getElementById('inv-table').innerHTML = invH;
             document.getElementById('manual-select').innerHTML = selH;
@@ -381,26 +478,19 @@
             let udH = '';
             for(let p in customers) {
                 if(customers[p].udhaar > 0)
-                udH += `<tr><td>${p}</td><td>${customers[p].name}</td><td style="color:red; font-weight:bold;">₹${customers[p].udhaar}</td>
-                <td><button class="btn btn-success" onclick="customers['${p}'].udhaar=0;updateUI();">Clear Dues</button></td></tr>`;
+                udH += `<tr><td><b>${p}</b></td><td>${customers[p].name}</td><td style="color:var(--danger); font-weight:bold;">₹${customers[p].udhaar}</td>
+                <td><button class="btn btn-success" onclick="customers['${p}'].udhaar=0;updateUI();">Settle Dues</button></td></tr>`;
             }
             document.getElementById('udhaar-table').innerHTML = udH;
 
-            let t=0, c=0, u=0, ud=0; let repH = '';
-            sales.forEach(s => {
-                t += s.amount;
-                if(s.mode === 'Cash') c += s.amount;
-                else if(s.mode === 'UPI') u += s.amount;
-                else ud += s.amount;
-                repH += `<tr><td>${s.time}</td><td>${s.customer}</td><td>${s.mode}</td><td>₹${s.amount}</td></tr>`;
+            let repH = '';
+            sales.slice().reverse().forEach(s => {
+                repH += `<tr><td>${s.time}</td><td>${s.customer}</td><td style="font-weight:bold;">₹${s.amount}</td><td><span style="background:#e2e8f0; padding:3px 8px; border-radius:5px; font-size:11px; font-weight:bold;">${s.mode}</span></td></tr>`;
             });
-            document.getElementById('st-total').innerText = '₹' + t.toFixed(0);
-            document.getElementById('st-cash').innerText = '₹' + c.toFixed(0);
-            document.getElementById('st-upi').innerText = '₹' + u.toFixed(0);
-            document.getElementById('st-udhaar').innerText = '₹' + ud.toFixed(0);
             document.getElementById('reports-table').innerHTML = repH;
         }
 
+        // Camera Logic
         let scanner = null;
         function openScanner(mode) {
             document.getElementById('cam-modal').style.display = 'flex';
@@ -408,7 +498,7 @@
             scanner.start({facingMode: "environment"}, {fps: 10, qrbox: 250}, (txt) => {
                 if(mode === 'pos') {
                     let item = inventory.find(i => i.barcode === txt);
-                    if(item) { addToCart(item, 1); playBeep(); }
+                    if(item) { playBeep(); triggerQtyModal(item); }
                 } else { document.getElementById('inv-barcode').value = txt; }
                 closeScanner();
             });
@@ -417,12 +507,12 @@
             document.getElementById('cam-modal').style.display = 'none';
             if(scanner) scanner.stop();
         }
-        function playBeep() {
-            try {
-                let ctx = new AudioContext(); let osc = ctx.createOscillator();
-                osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1);
-            } catch(e) {}
-        }
+        function playBeep() { try { let ctx = new AudioContext(); let osc = ctx.createOscillator(); osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
+
+        // Trigger 'Enter' key on quantity modal
+        document.getElementById('popup-qty-input').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') confirmAddQuantity();
+        });
 
         updateUI();
     </script>
