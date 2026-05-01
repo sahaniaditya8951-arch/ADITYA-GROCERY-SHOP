@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baragadhi Premium POS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Barcode Scanner Library for Camera -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --dark: #111827;
+            --light: #f3f4f6;
+            --white: #ffffff;
+            --gray: #6b7280;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--light); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar { width: 250px; background-color: var(--dark); color: var(--white); display: flex; flex-direction: column; }
+        .logo { padding: 20px; font-size: 24px; font-weight: 700; text-align: center; border-bottom: 1px solid #374151; letter-spacing: 1px; color: #818cf8; }
+        .nav-btn { padding: 15px 20px; border: none; background: none; color: #9ca3af; text-align: left; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .nav-btn:hover, .nav-btn.active { background-color: #374151; color: var(--white); border-left: 4px solid var(--primary); }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        .header { background: var(--white); padding: 15px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header h2 { color: var(--dark); font-size: 20px; }
+        .date-time { color: var(--gray); font-size: 14px; }
+
+        .section { display: none; padding: 20px 30px; }
+        .section.active { display: block; }
+
+        /* Grid Layout for POS */
+        .pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; height: calc(100vh - 120px); }
+        .card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+        /* Inputs & Buttons */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; color: var(--gray); font-size: 13px; font-weight: 500; }
+        input, select { width: 100%; padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: 0.3s; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        .flex-row { display: flex; gap: 10px; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: var(--success); color: var(--white); width: 100%; padding: 15px; font-size: 16px; margin-top: 10px; }
+        .btn-success:hover { background: #059669; }
+        .btn-danger { background: var(--danger); color: var(--white); padding: 5px 10px; font-size: 12px; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { color: var(--gray); font-weight: 500; font-size: 13px; text-transform: uppercase; }
+        td { font-size: 14px; color: var(--dark); }
+
+        /* Cart Area */
+        .cart-area { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .cart-items { flex: 1; overflow-y: auto; margin-bottom: 15px; border-bottom: 2px dashed #e5e7eb; padding-bottom: 10px; }
+        .totals-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; color: var(--gray); }
+        .grand-total { display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 15px; }
+
+        /* Camera Modal Setup */
+        #camera-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .camera-container { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; }
+        #reader { width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; }
+
+        /* Print Receipt Styling */
+        #print-section { display: none; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #print-section, #print-section * { visibility: visible; }
+            #print-section { 
+                position: absolute; left: 0; top: 0; width: 80mm; 
+                padding: 10px; font-family: monospace; font-size: 12px; color: #000;
+            }
+            .print-center { text-align: center; }
+            .print-divider { border-top: 1px dashed #000; margin: 5px 0; }
+            .print-table { width: 100%; }
+            .print-table th, .print-table td { padding: 2px 0; text-align: left; border: none; }
+            .print-table th:last-child, .print-table td:last-child { text-align: right; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">BARAGADHI<br><span style="font-size: 12px; color: #9ca3af;">SUPERMART</span></div>
+        <button class="nav-btn active" id="nav-pos" onclick="switchTab('pos')">🛒 Point of Sale</button>
+        <button class="nav-btn" id="nav-inv" onclick="switchTab('inventory')">📦 Inventory</button>
+        <button class="nav-btn" id="nav-cust" onclick="switchTab('customers')">👥 Customers</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2 id="page-title">Point of Sale</h2>
+            <div class="date-time" id="current-date"></div>
+        </div>
+
+        <!-- POS SECTION -->
+        <div id="pos-section" class="section active">
+            <div class="pos-grid">
+                <!-- Left: Scanner & Product List -->
+                <div class="card" style="display: flex; flex-direction: column;">
+                    
+                    <div class="input-group">
+                        <label>🔍 Scan Barcode (Keep cursor here for physical machine)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="barcode-scanner" placeholder="Scan using machine..." autofocus onkeypress="handleBarcodeScan(event)" style="flex: 1;">
+                            <button class="btn btn-primary" onclick="openCameraScanner()" style="display: flex; align-items: center; gap: 5px;">
+                                📷 Mobile Camera
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-row" style="margin-bottom: 15px;">
+                        <div class="input-group" style="flex: 2;">
+                            <label>Manual Item Select</label>
+                            <select id="manual-item"></select>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <label>Qty</label>
+                            <input type="number" id="manual-qty" value="1" min="1">
+                        </div>
+                        <div class="input-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary" onclick="addManualItem()">Add</button>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; overflow-y: auto; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+                        <h4 style="margin-bottom: 10px; color: var(--gray);">Available Stock Quick View</h4>
+                        <table>
+                            <thead><tr><th>Barcode</th><th>Item</th><th>Price</th><th>Stock</th></tr></thead>
+                            <tbody id="quick-stock-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right: Cart & Customer -->
+                <div class="card cart-area">
+                    <div>
+                        <div class="flex-row">
+                            <div class="input-group" style="flex: 1;">
+                                <label>Customer Phone</label>
+                                <input type="text" id="cust-phone" placeholder="10-digit number" onkeyup="checkCustomer()">
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label>Customer Name</label>
+                                <input type="text" id="cust-name" placeholder="Name">
+                            </div>
+                        </div>
+                        <div class="cart-items">
+                            <table>
+                                <thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+                                <tbody id="cart-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="totals-row"><span>Subtotal:</span> <span id="subtotal">₹0.00</span></div>
+                        <div class="totals-row"><span>Tax (Included):</span> <span>₹0.00</span></div>
+                        <div class="grand-total"><span>Grand Total:</span> <span id="grand-total">₹0.00</span></div>
+                        <button class="btn-success" onclick="generateBill()">🧾 Print Bill & Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTORY SECTION -->
+        <div id="inventory-section" class="section">
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Add New Item</h3>
+                <div class="flex-row">
+                    <div class="input-group" style="flex: 1;"><label>Barcode</label><input type="text" id="inv-barcode" placeholder="Scan or Type"></div>
+                    <div class="input-group" style="flex: 2;"><label>Item Name</label><input type="text" id="inv-name" placeholder="Product Name"></div>
+                    <div class="input-group" style="flex: 1;"><label>Price (₹)</label><input type="number" id="inv-price" placeholder="0.00"></div>
+                    <div class="input-group" style="flex: 1;"><label>Stock Qty</label><input type="number" id="inv-stock" placeholder="0"></div>
+                    <div class="input-group" style="display: flex; align-items: flex-end;"><button class="btn btn-primary" onclick="addInventory()">Save Item</button></div>
+                </div>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e5e7eb;">
+                <h3 style="margin-bottom: 15px;">Inventory Master</h3>
+                <table>
+                    <thead><tr><th>Barcode</th><th>Item Name</th><th>Selling Price</th><th>Available Stock</th><th>Action</th></tr></thead>
+                    <tbody id="inv-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CUSTOMERS SECTION -->
+        <div id="customers-section" class="section">
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">Customer Database</h3>
+                <table>
+                    <thead><tr><th>Phone Number</th><th>Customer Name</th><th>Total Visits</th></tr></thead>
+                    <tbody id="cust-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Scanning Modal -->
+    <div id="camera-modal">
+        <div class="camera-container">
+            <h3 style="margin-bottom: 10px;">Scan Barcode</h3>
+            <p style="font-size: 12px; color: var(--gray); margin-bottom: 15px;">Point your camera at the barcode.</p>
+            <div id="reader"></div>
+            <button class="btn btn-danger" style="margin-top: 15px; width: 100%;" onclick="closeCameraScanner()">Cancel / Close</button>
+        </div>
+    </div>
+
+    <!-- Hidden Print Area (Thermal Receipt Format) -->
+    <div id="print-section">
+        <div class="print-center">
+            <h2 style="margin: 0;">BARAGADHI RETAIL</h2>
+            <p style="margin: 2px 0;">Gorakhpur, UP</p>
+            <p style="margin: 2px 0;">Ph: +91-9999999999</p>
+        </div>
+        <div class="print-divider"></div>
+        <p style="margin: 2px 0;">Date: <span id="print-date"></span></p>
+        <p style="margin: 2px 0;">Customer: <span id="print-cust-name"></span></p>
+        <p style="margin: 2px 0;">Phone: <span id="print-cust-phone"></span></p>
+        <div class="print-divider"></div>
+        <table class="print-table">
+            <thead><tr><th>Item</th><th>Qty</th><th>Amt</th></tr></thead>
+            <tbody id="print-cart-items"></tbody>
+        </table>
+        <div class="print-divider"></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold;">
+            <span>TOTAL:</span><span id="print-total">₹0.00</span>
+        </div>
+        <div class="print-divider"></div>
+        <div class="print-center">
+            <p>Thank You for Shopping!</p>
+            <p>Visit Again</p>
+        </div>
+    </div>
+
+    <script>
+        // Data Structures
+        let inventory = JSON.parse(localStorage.getItem('bg_inventory')) || [];
+        let customers = JSON.parse(localStorage.getItem('bg_customers')) || {};
+        let cart = [];
+        let html5QrCode; // For camera scanner
+
+        // Set Date
+        document.getElementById('current-date').innerText = new Date().toLocaleString('en-IN');
+        setInterval(() => { document.getElementById('current-date').innerText = new Date().toLocaleString('en-IN'); }, 1000);
+
+        // Tab Switching
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab + '-section').classList.add('active');
+            
+            let titles = { 'pos': 'Point of Sale', 'inventory': 'Inventory Management', 'customers': 'Customer Directory' };
+            document.getElementById('page-title').innerText = titles[tab];
+            
+            if(tab === 'pos') {
+                document.getElementById('nav-pos').classList.add('active');
+                document.getElementById('barcode-scanner').focus();
+            }
+            if(tab === 'inventory') document.getElementById('nav-inv').classList.add('active');
+            if(tab === 'customers') document.getElementById('nav-cust').classList.add('active');
+            updateUI();
+        }
+
+        // --- Inventory Functions ---
+        function addInventory() {
+            let barcode = document.getElementById('inv-barcode').value.trim();
+            let name = document.getElementById('inv-name').value.trim();
+            let price = parseFloat(document.getElementById('inv-price').value);
+            let stock = parseInt(document.getElementById('inv-stock').value);
+
+            if(!barcode || !name || isNaN(price) || isNaN(stock)) return alert("Please fill all fields correctly.");
+            
+            let existingIdx = inventory.findIndex(i => i.barcode === barcode);
+            if(existingIdx >= 0) {
+                inventory[existingIdx].stock += stock; 
+                inventory[existingIdx].price = price;
+            } else {
+                inventory.push({ barcode, name, price, stock });
+            }
+            
+            saveData(); clearInvInputs(); updateUI(); alert("Item Saved!");
+        }
+
+        function deleteItem(index) {
+            if(confirm("Delete this item?")) {
+                inventory.splice(index, 1);
+                saveData(); updateUI();
+            }
+        }
+
+        function clearInvInputs() {
+            document.getElementById('inv-barcode').value = '';
+            document.getElementById('inv-name').value = '';
+            document.getElementById('inv-price').value = '';
+            document.getElementById('inv-stock').value = '';
+        }
+
+        // --- POS Functions (Physical Scanner) ---
+        function handleBarcodeScan(e) {
+            if(e.key === 'Enter') {
+                let barcode = e.target.value.trim();
+                let item = inventory.find(i => i.barcode === barcode);
+                
+                if(item) {
+                    addToCart(item, 1);
+                    playBeepSound();
+                } else {
+                    alert("Product not found in inventory!");
+                }
+                e.target.value = ''; // Clear for next scan
+                e.target.focus();
+            }
+        }
+
+        // --- POS Functions (Mobile Camera Scanner) ---
+        function openCameraScanner() {
+            document.getElementById('camera-modal').style.display = 'flex';
+            html5QrCode = new Html5Qrcode("reader");
+            
+            // facingMode: "environment" uses the back camera
+            html5QrCode.start({ facingMode: "environment" }, {
+                fps: 10,
+                qrbox: { width: 250, height: 150 }
+            }, (decodedText, decodedResult) => {
+                // On Success Scan
+                closeCameraScanner();
+                let item = inventory.find(i => i.barcode === decodedText);
+                if(item) {
+                    addToCart(item, 1);
+                    playBeepSound();
+                } else {
+                    alert("Product not found: " + decodedText);
+                }
+            }).catch(err => {
+                alert("Camera starting error. Please allow camera permissions.");
+                closeCameraScanner();
+            });
+        }
+
+        function closeCameraScanner() {
+            document.getElementById('camera-modal').style.display = 'none';
+            if(html5QrCode) {
+                try {
+                    html5QrCode.stop().then(() => { html5QrCode.clear(); }).catch(e => console.log(e));
+                } catch(e) {}
+            }
+            document.getElementById('barcode-scanner').focus();
+        }
+
+        // --- Core POS Logic ---
+        function addManualItem() {
+            let barcode = document.getElementById('manual-item').value;
+            let qty = parseInt(document.getElementById('manual-qty').value);
+            if(!barcode || isNaN(qty) || qty <= 0) return;
+            let item = inventory.find(i => i.barcode === barcode);
+            if(item) addToCart(item, qty);
+        }
+
+        function addToCart(item, qty) {
+            let cartItem = cart.find(c => c.barcode === item.barcode);
+            let currentCartQty = cartItem ? cartItem.qty : 0;
+
+            if(item.stock < (currentCartQty + qty)) {
+                return alert(`Not enough stock! Only ${item.stock} left.`);
+            }
+
+            if(cartItem) { cartItem.qty += qty; } 
+            else { cart.push({ barcode: item.barcode, name: item.name, price: item.price, qty: qty }); }
+            updateCartUI();
+        }
+
+        function removeFromCart(barcode) {
+            cart = cart.filter(c => c.barcode !== barcode);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let tbody = ''; let total = 0;
+            cart.forEach(c => {
+                let amt = c.price * c.qty; total += amt;
+                tbody += `<tr>
+                    <td><div style="font-weight:600;">${c.name}</div><div style="font-size:12px; color:var(--gray);">${c.barcode}</div></td>
+                    <td>${c.qty}</td>
+                    <td>₹${amt.toFixed(2)}</td>
+                    <td><button class="btn-danger btn" onclick="removeFromCart('${c.barcode}')">X</button></td>
+                </tr>`;
+            });
+            document.getElementById('cart-table').innerHTML = tbody;
+            document.getElementById('subtotal').innerText = `₹${total.toFixed(2)}`;
+            document.getElementById('grand-total').innerText = `₹${total.toFixed(2)}`;
+        }
+
+        // Play Beep Sound Function
+        function playBeepSound() {
+            try {
+                let context = new (window.AudioContext || window.webkitAudioContext)();
+                let oscillator = context.createOscillator();
+                oscillator.type = "sine";
+                oscillator.frequency.value = 800; // Beep frequency
+                oscillator.connect(context.destination);
+                oscillator.start();
+                oscillator.stop(context.currentTime + 0.1); // Beep duration
+            } catch(e) { console.log("Audio not supported"); }
+        }
+
+        // --- Customer Logic ---
+        function checkCustomer() {
+            let phone = document.getElementById('cust-phone').value;
+            if(phone.length >= 10 && customers[phone]) {
+                document.getElementById('cust-name').value = customers[phone].name;
+            }
+        }
+
+        // --- Checkout & Print ---
+        function generateBill() {
+            if(cart.length === 0) return alert("Cart is empty!");
+            
+            let phone = document.getElementById('cust-phone').value || "Walk-in";
+            let name = document.getElementById('cust-name').value || "Customer";
+            let total = cart.reduce((sum, c) => sum + (c.price * c.qty), 0);
+
+            if(phone !== "Walk-in") {
+                if(!customers[phone]) customers[phone] = { name: name, visits: 0 };
+                customers[phone].visits += 1;
+                customers[phone].name = name; 
+            }
+
+            cart.forEach(cItem => {
+                let invItem = inventory.find(i => i.barcode === cItem.barcode);
+                if(invItem) invItem.stock -= cItem.qty;
+            });
+
+            saveData();
+
+            document.getElementById('print-date').innerText = new Date().toLocaleString('en-IN');
+            document.getElementById('print-cust-name').innerText = name;
+            document.getElementById('print-cust-phone').innerText = phone;
+            
+            let printTbody = '';
+            cart.forEach(c => { printTbody += `<tr><td>${c.name}</td><td>${c.qty}</td><td>₹${(c.price * c.qty)}</td></tr>`; });
+            document.getElementById('print-cart-items').innerHTML = printTbody;
+            document.getElementById('print-total').innerText = `₹${total.toFixed(2)}`;
+
+            window.print();
+
+            cart = [];
+            document.getElementById('cust-phone').value = '';
+            document.getElementById('cust-name').value = '';
+            updateCartUI(); updateUI();
+            document.getElementById('barcode-scanner').focus();
+        }
+
+        // --- Core UI Updates ---
+        function saveData() {
+            localStorage.setItem('bg_inventory', JSON.stringify(inventory));
+            localStorage.setItem('bg_customers', JSON.stringify(customers));
+        }
+
+        function updateUI() {
+            let invHtml = ''; let stockHtml = ''; let manualOptions = '<option value="">-- Select Item --</option>';
+            
+            inventory.forEach((item, idx) => {
+                let stockStyle = item.stock < 5 ? 'color: var(--danger); font-weight:bold;' : '';
+                invHtml += `<tr><td>${item.barcode}</td><td>${item.name}</td><td>₹${item.price}</td><td style="${stockStyle}">${item.stock}</td>
+                    <td><button class="btn btn-danger" onclick="deleteItem(${idx})">Delete</button></td></tr>`;
+                stockHtml += `<tr><td>${item.barcode}</td><td>${item.name}</td><td>₹${item.price}</td><td style="${stockStyle}">${item.stock}</td></tr>`;
+                if(item.stock > 0) { manualOptions += `<option value="${item.barcode}">${item.name} (Stock: ${item.stock})</option>`; }
+            });
+
+            document.getElementById('inv-table').innerHTML = invHtml;
+            document.getElementById('quick-stock-table').innerHTML = stockHtml;
+            document.getElementById('manual-item').innerHTML = manualOptions;
+
+            let custHtml = '';
+            for(let phone in customers) { custHtml += `<tr><td>${phone}</td><td>${customers[phone].name}</td><td>${customers[phone].visits}</td></tr>`; }
+            document.getElementById('cust-table').innerHTML = custHtml;
+        }
+
+        updateUI();
+        document.getElementById('barcode-scanner').focus();
+    </script>
+</body>
+</html>
